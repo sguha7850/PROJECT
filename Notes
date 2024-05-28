@@ -1,6 +1,9 @@
 vncserver -xstartup /bin/xterm -localhost no
 xfce4-session
 
+Create Virtual env in linux before starting:
+https://docs.python.org/3/library/venv.html
+
 Code to display 2 columns in matplotlib from dat file
 
 import numpy as np  
