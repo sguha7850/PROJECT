@@ -1,0 +1,13 @@
+vncserver -xstartup /bin/xterm -localhost no
+xfce4-session
+
+Code to display 2 columns in matplotlib from dat file
+
+import numpy as np  
+from matplotlib import pyplot as plt  
+data=np.loadtxt('filep.dat')  
+pl.plot(data[:,1],data[:,2],'bo')  
+X=data[:,1]  
+Y=data[:,2]  
+plt.plot(X,Y,':ro')  
+plt.show()
