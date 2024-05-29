@@ -16,6 +16,7 @@ plt.plot(X,Y,':ro')
 plt.show()
 --------------------------------------------------------------------------------
 #Generate band diagram plot using pymatgen and vasprun.xml
+https://enccs.github.io/vasp-best-practices/fcc_Si_bandstructure/
 
 from pymatgen.io.vasp.outputs import Vasprun
 from pymatgen.electronic_structure.plotter import BSPlotter
