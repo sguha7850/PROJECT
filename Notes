@@ -1,9 +1,9 @@
 vncserver -xstartup /bin/xterm -localhost no
 xfce4-session
-
+---------------------------------------------------------------
 #Create Virtual env in linux before starting:
 https://docs.python.org/3/library/venv.html
-
+-----------------------------------------------------------------
 #Code to display 2 columns in matplotlib from dat file
 
 import numpy as np  
@@ -14,7 +14,7 @@ X=data[:,1]
 Y=data[:,2]  
 plt.plot(X,Y,':ro')  
 plt.show()
-
+--------------------------------------------------------------------------------
 #Generate band diagram plot using pymatgen and vasprun.xml
 
 from pymatgen.io.vasp.outputs import Vasprun
@@ -24,3 +24,21 @@ bandstr = vaspout.get_band_structure(line_mode=True)
 plt = BSPlotter(bandstr).get_plot(ylim=[-12,10])
 plt.figure.savefig("band.pdf")
 plt.figure.show()
+---------------------------------------------------------------------------------------
+#plot Si band structure using high-symmtery k path (using pymatgen)
+
+https://ma.issp.u-tokyo.ac.jp/en/app-post/1146#:~:text=Band%20structure%20calculations%20using%20VASP,Plot%20the%20band%20structure.
+
+#code: run this code after running vasp for the first time using the 4 files. This code will create a new KPOINTS file which we need to use for the 2nd run of vasp
+
+from pymatgen.io.vasp.inputs import Kpoints
+from pymatgen.core import Structure
+from pymatgen.symmetry.bandstructure import HighSymmKpath
+
+struct = Structure.from_file("POSCAR")
+kpath = HighSymmKpath(struct)
+kpts = Kpoints.automatic_linemode(divisions=40,ibz=kpath)
+kpts.write_file("KPOINTS_nsc")
+
+--------------------------------------------------------------------------------------------------------
+
