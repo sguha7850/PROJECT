@@ -42,4 +42,15 @@ kpts = Kpoints.automatic_linemode(divisions=40,ibz=kpath)
 kpts.write_file("KPOINTS_nsc")
 
 --------------------------------------------------------------------------------------------------------
+#bandgap calculation:
 
+from pymatgen.io.vasp import Vasprun
+from pymatgen.electronic_structure.bandstructure import BandStructure
+vasprun = Vasprun("./vasprun.xml")
+band_structure = vasprun.get_band_structure()
+band_gap = band_structure.get_band_gap()
+
+# Print the bandgap information
+print(f"Bandgap: {band_gap['energy']} eV")
+print(f"Is the bandgap direct? {band_gap['direct']}")
+print(f"Transition: {band_gap['transition']}")
