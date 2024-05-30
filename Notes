@@ -54,3 +54,7 @@ band_gap = band_structure.get_band_gap()
 print(f"Bandgap: {band_gap['energy']} eV")
 print(f"Is the bandgap direct? {band_gap['direct']}")
 print(f"Transition: {band_gap['transition']}")
+
+-------------------------------------------------------------------------------------------------------
+
+
