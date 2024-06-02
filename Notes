@@ -3,6 +3,15 @@ xfce4-session
 ---------------------------------------------------------------
 #Create Virtual env in linux before starting:
 https://docs.python.org/3/library/venv.html
+
+--------------------------------------------------------------
+
+#Activate existing Venv: Using the command source venv/bin/activate while in that directory, will activate that virtual environment
+
+cd Documents/Virtual_Env_Python/.venv
+source bin/activate
+
+https://discuss.python.org/t/from-what-directory-can-you-activate-a-virtual-environment/24698/3
 -----------------------------------------------------------------
 #Code to display 2 columns in matplotlib from dat file
 
