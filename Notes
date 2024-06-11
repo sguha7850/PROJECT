@@ -24,6 +24,22 @@ Y=data[:,2]
 plt.plot(X,Y,':ro')  
 plt.show()
 --------------------------------------------------------------------------------
+Generate DOS: https://gist.github.com/lan496/ee0bd7a52df99029ac0aacbe69f2bf57
+
+import matplotlib as plt
+from pymatgen.electronic_structure.core import OrbitalType
+from pymatgen.electronic_structure.plotter import DosPlotter
+from pymatgen.io.vasp.outputs import Vasprun
+result = Vasprun('./vasprun.xml', parse_potcar_file=False)
+complete_dos = result.complete_dos
+plotter = DosPlotter()
+plotter.add_dos('Total DOS', result.tdos)
+plotter.get_plot(xlim=(-6, 5), ylim=(0, 14))
+plt.savefig('MoS2_dos.pdf', dpi=500)
+
+--------------------------------------------------------------------------------------
+
+
 #Generate band diagram plot using pymatgen and vasprun.xml
 https://enccs.github.io/vasp-best-practices/fcc_Si_bandstructure/
 
