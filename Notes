@@ -24,6 +24,34 @@ Y=data[:,2]
 plt.plot(X,Y,':ro')  
 plt.show()
 --------------------------------------------------------------------------------
+Plot relaxation energy (TOTEN) vs no of steps (from OUTCAR)
+
+with open('OUTCAR', 'r') as file:
+...     lines = file.readlines()
+...
+>>> values = []
+>>> for line in lines:
+...     if 'TOTEN' in line:
+...         value = line.split('=')[1].strip()
+...         values.append(value)
+...
+>>> print(values)
+
+>>> import numpy as np
+>>> new_values = [float(v.replace(' eV', '')) for v in values]
+>>> print(new_values)
+
+>>> import matplotlib.pyplot as plt
+>>> x = np.arange(1, len(new_values)+1)
+>>> plt.plot(x, new_values)
+
+>>> plt.xlabel('Index')
+>>> plt.ylabel('Value')
+>>> plt.title('Plot of Values')
+>>> plt.show()
+
+---------------------------------------------------------------------------------------------
+
 Generate DOS: https://gist.github.com/lan496/ee0bd7a52df99029ac0aacbe69f2bf57
 
 import matplotlib as plt
