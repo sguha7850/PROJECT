@@ -54,7 +54,7 @@ with open('OUTCAR', 'r') as file:
 
 Generate DOS: https://gist.github.com/lan496/ee0bd7a52df99029ac0aacbe69f2bf57
 
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from pymatgen.electronic_structure.core import OrbitalType
 from pymatgen.electronic_structure.plotter import DosPlotter
 from pymatgen.io.vasp.outputs import Vasprun
