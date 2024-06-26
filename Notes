@@ -4,6 +4,9 @@ xfce4-session
 #Create Virtual env in linux before starting:
 https://docs.python.org/3/library/venv.html
 
+python3 -m venv sourav_venv
+source sourav_venv/bin/activate
+
 --------------------------------------------------------------
 
 #Activate existing Venv: Using the command source venv/bin/activate while in that directory, will activate that virtual environment
