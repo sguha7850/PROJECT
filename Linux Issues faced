@@ -1,0 +1,10 @@
+bash not found error:
+
+go to .bash_profile
+modify PATH location by giving full path
+PATH=/home/user/bin
+go to terminal, type touch ~/.bash_profile
+Issue resolved
+
+-------------------------------------------------------------------------------
+
