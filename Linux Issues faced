@@ -7,4 +7,9 @@ go to terminal, type touch ~/.bash_profile
 Issue resolved
 
 -------------------------------------------------------------------------------
-
+Installing Lammps lackages:
+cd lammps/src
+make ps                    # check which packages are currently installed
+make yes-name              # install a package with name
+make no-name               # uninstall a package with name
+make mpi                   # build LAMMPS with whatever packages are now installed
