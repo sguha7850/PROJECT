@@ -16,6 +16,12 @@ source bin/activate
 
 https://discuss.python.org/t/from-what-directory-can-you-activate-a-virtual-environment/24698/3
 -----------------------------------------------------------------
+Preparing POTCAR files:
+Copy the respective POTCAR  files to your working directory
+cat Mo_POTCAR Te_POTCAR  > POTCAR
+
+--------------------------------------------------------------------------------
+
 #Code to display 2 columns in matplotlib from dat file
 
 import numpy as np  
