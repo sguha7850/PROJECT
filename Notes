@@ -35,29 +35,27 @@ plt.show()
 --------------------------------------------------------------------------------
 Plot relaxation energy (TOTEN) vs no of steps (from OUTCAR)
 
+import matplotlib.pyplot as plt
 with open('OUTCAR', 'r') as file:
-...     lines = file.readlines()
-...
->>> values = []
->>> for line in lines:
-...     if 'TOTEN' in line:
-...         value = line.split('=')[1].strip()
-...         values.append(value)
-...
->>> print(values)
+    lines = file.readlines()
 
->>> import numpy as np
->>> new_values = [float(v.replace(' eV', '')) for v in values]
->>> print(new_values)
+values = []
+for line in lines:
+    if 'TOTEN' in line:
+        value = line.split('=')[1].strip()
+        values.append(value)
 
->>> import matplotlib.pyplot as plt
->>> x = np.arange(1, len(new_values)+1)
->>> plt.plot(x, new_values)
+import numpy as np
+new_values = [float(v.replace(' eV', '')) for v in values]
 
->>> plt.xlabel('Index')
->>> plt.ylabel('Value')
->>> plt.title('Plot of Values')
->>> plt.show()
+import matplotlib.pyplot as plt
+x = np.arange(1, len(new_values)+1)
+plt.plot(x, new_values)
+
+plt.xlabel('Index')
+plt.ylabel('Value')
+plt.title('Plot of Values')
+plt.show()
 
 ---------------------------------------------------------------------------------------------
 
