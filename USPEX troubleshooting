@@ -1,0 +1,14 @@
+listdc++ error:
+
+Solution:
+I got the issue fixed
+
+Reference:https://groups.google.com/g/uspex/c/h0NiBPT_ivw/m/AyssF3bQAgAJ
+This issue may be related to a version conflict between system libraries and the libstdc++ version included with MATLAB. You may be able to resolve this issue by making MATLAB use your system's libstdc++ instead of the libstdc++ shipped with MATLAB. While you can accomplish this in the way described by Joseph above, there is a better way: From a Linux shell (with appropriate permissions to make modifications in your MATLAB installation, i.e. use "sudo" if needed or work with your system administrator):
+
+1. cd into your MATLAB sys/os/glnxa64 directory.
+2. Create a new directory named "old": mkdir old
+3. Move libstdc++* into the old directory:
+4. copy system libstdc++ file from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25 and paste it in glnxa64 folder
+-------------------------------------------------------------------------------------------------------------------------------------
+
