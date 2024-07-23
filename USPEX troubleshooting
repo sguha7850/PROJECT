@@ -12,3 +12,22 @@ This issue may be related to a version conflict between system libraries and the
 4. copy system libstdc++ file from /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.25 and paste it in glnxa64 folder
 -------------------------------------------------------------------------------------------------------------------------------------
 
+ModuleNotFoundError: No module named 'spglib'
+Command executed: python3 -W ignore {directory}/spacegroup.py structure.json
+Error in anasym_stokes (line 55)
+Error in WriteIndividualOutput_300 (line 21)
+Error in ReadJobs (line 105)
+Error in LocalRelaxation (line 52)
+Error in EA_300 (line 13)
+Error in Start (line 52)
+Error in USPEX (line 39)
+MATLAB:python:ExecutionError
+
+Solution:
+1. create virtual env
+2. activate virt env
+3. use pip list to check all libraries
+4. run USPEX only after activating venv
+
+-----------------------------------------------------------------------------------------------
+
