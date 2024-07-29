@@ -30,4 +30,8 @@ Solution:
 4. run USPEX only after activating venv
 
 -----------------------------------------------------------------------------------------------
+For variable compostion, uspex not moving to 2nd generation:
 
+What worked for me: download and reinstall matlab runtime - v91 folder
+
+------------------------------------------------------------------------------------------------
