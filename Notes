@@ -9,6 +9,11 @@ source sourav_venv/bin/activate
 
 --------------------------------------------------------------
 
+pip related issues:
+https://stackoverflow.com/questions/66365215/pip-wont-let-me-upgrade-to-the-latest-version-of-package
+
+---------------------------------------------------------------------------------------------------------------
+
 #Activate existing Venv: Using the command source venv/bin/activate while in that directory, will activate that virtual environment
 
 cd Documents/Virtual_Env_Python/.venv
