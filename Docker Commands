@@ -1,0 +1,638 @@
+# Use an official Ubuntu base image
+FROM ubuntu:22.04
+
+# Set environment variable for non-interactive apt-get installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update the package list and install necessary packages
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    build-essential \
+    gcc \
+    g++ \
+    openmpi-bin \
+    openmpi-common \
+    libopenmpi-dev
+
+# Install NumPy and SciPy
+RUN pip3 install numpy scipy
+
+# Set a working directory
+WORKDIR /raid/cedsan/mydocker/
+
+# Specify the default command to run
+#CMD ["python3"]
+
+# Install OpenMPI
+#RUN apt-get install -y openmpi-bin openmpi-common libopenmpi-dev
+
+RUN apt-get install -y wget
+
+#CUDA INSTALL
+
+#WORKDIR /opt/nvidia
+#RUN mkdir -p /tmp/nvidia && cd /tmp/nvidia
+#RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb 
+#ADD /raid/cedsan/nvidia /tmp/nvidia
+#RUN cp /raid/cedsan/nvidia/cuda-keyring_1.1-1_all.deb /tmp/nvidia
+#RUN dpkg -i cuda-keyring_1.1-1_all.deb 
+#RUN apt-get update
+#RUN apt-get -y install cuda-toolkit-12-6
+
+
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+
+#set environment variables for user credentials obtained by step 2, password can be of users choice
+#ENV dockerusername=secdsan
+#ENV dockeruserpassword=password
+#ENV dockerusergroupid=1040
+#ENV dockeruserid=18308
+#ENV dockerusergroupname=serc3
+
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary system packages
+RUN apt-get update && apt-get install -y wget bzip2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && bash /tmp/miniconda.sh -b -p /opt/miniconda && rm /tmp/miniconda.sh
+
+# Add Conda to the PATH environment variable
+ENV PATH=/opt/miniconda/bin:$PATH
+
+RUN apt-get update && apt-get install -y sudo
+
+a9dab6d55bda 
+
+https://chatgpt.com/c/6719083a-6f60-8004-b8e1-920aabf00d3d
+
+docker cp /raid/cedsan/nvidia/nvhpc_2024_249_Linux_x86_64_cuda_multi.tar.gz f5ee4fe40c49:/Downloads
+docker cp /raid/cedsan/mydocker/commands 07b7d577f775:/Downloads
+docker cp /raid/cedsan/fftw-3.3.10/ 394881dddc35:/Downloads
+394881dddc35 
+
+ee36549db6aa
+docker commit 22824b5e10ba my_openmpi_image
+
+tar -xvzf nvhpc_2024_249_Linux_x86_64_cuda_multi.tar.gz -C /opt
+
+
+docker run -td my_openmpi_image /bin/bash
+docker run -it my_openmpi_image /bin/bash
+docker run -it -d my_openmpi_image /bin/bash
+docker run -it -t my_openmpi_image /bin/bash
+
+docker exec -it 8f33df4d7e1c  /bin/bash
+
+export NVHPC_SILENT=true
+export NVHPC_INSTALL_DIR=/opt/nvidia/hpc_sdk
+export NVHPC_INSTALL_TYPE=single
+export NVHPC_DEFAULT_CUDA=12.2
+export NVHPC_STDPAR_CUDACC=true
+
+module installation:
+sudo apt install environment-modules
+source /etc/profile.d/modules.sh
+source ~/.bashrc
+module avail
+
+---------------------
+
+nvidia:
+
+NVARCH=`uname -s`_`uname -m`; export NVARCH
+NVCOMPILERS=/opt/nvidia/hpc_sdk; export NVCOMPILERS
+MANPATH=$MANPATH:$NVCOMPILERS/$NVARCH/24.9/compilers/man; export MANPATH
+PATH=$NVCOMPILERS/$NVARCH/24.9/compilers/bin:$PATH; export PATH
+export PATH=$NVCOMPILERS/$NVARCH/24.9/comm_libs/mpi/bin:$PATH
+export MANPATH=$MANPATH:$NVCOMPILERS/$NVARCH/24.9/comm_libs/mpi/man
+export MODULEPATH=$NVCOMPILERS/modulefiles:$MODULEPATH
+module load nvhpc
+
+
+NVARCH=`uname -s`_`uname -m`; export NVARCH
+NVCOMPILERS=/opt/nvidia/hpc_sdk; export NVCOMPILERS
+MANPATH=$MANPATH:$NVCOMPILERS/$NVARCH/22.2/compilers/man; export MANPATH
+PATH=$NVCOMPILERS/$NVARCH/22.2/compilers/bin:$PATH; export PATH
+export PATH=$NVCOMPILERS/$NVARCH/22.2/comm_libs/mpi/bin:$PATH
+export MANPATH=$MANPATH:$NVCOMPILERS/$NVARCH/22.2/comm_libs/mpi/man
+export MODULEPATH=$NVCOMPILERS/modulefiles:$MODULEPATH
+module load nvhpc
+
+---------------------------------
+
+h5cc -showconfig
+which h5cc
+
+dpkg -l 'libfftw3*'
+apt search libfftw3
+/usr/lib/x86_64-linux-gnu/libfftw3f.so
+fftw-wisdom --version
+which fftw-wisdom
+
+/usr/local/lib - fftw
+sudo find / -type f -name "fftw3.f"
+/usr/local/include
+---------------------------------------
+
+# FFTW (mandatory)
+FFTW_ROOT   = /usr/local
+LLIBS      += -L$(FFTW_ROOT)/lib -lfftw3
+INCS       += -I$(FFTW_ROOT)/include
+
+sudo apt-get install rsync -y
+docker run -t my_openmpi_image /bin/bash
+
+45851986e803 
+docker cp /raid/cedsan/mydocker/makefile.include 45851986e803:/Downloads
+docker commit 032f6aa9a2bc my_openmpi_image
+
+docker exec -t 86c64fd047d5 /bin/bash
+
+docker stop id
+
+docker start 0971f2ae4efa 
+docker exec -it 0971f2ae4efa bash
+
+docker run -it my_openmpi_image /bin/bash
+
+docker run -it my_openmpi_image /bin/bash -c "cd /Downloads/vasp.6.4.3 && make DEPS=1 all && tail -f /dev/null"
+
+/Downloads/vasp.6.4.3
+
+73dcbd6af583
+
+docker cp /raid/cedsan/mydocker/vasp_run.sh 73dcbd6af583:/Downloads/vasp.6.4.3
+
+docker run -it my_openmpi_image /bin/bash
+docker exec -it 0c732c7bb740 /bin/bash
+
+docker cp /raid/cedsan/qdmodule.mod 123a047e1b3c:/Downloads
+docker commit de7cd508b531 cupy_docker
+
+
+docker build -t nvidia_docker .
+docker run -it nvidia_docker /bin/bash
+
+
+tar -xvzf fftw-3.3.10.tar.gz
+
+
+/usr/local/include
+/usr/local/lib
+
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/bin/nvfortran
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/extras/qd
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/extras/qd/lib
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/extras/qd/include/qd
+
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9
+
+/opt/nvhpc_2024_249_Linux_x86_64_cuda_multi/install_components/Linux_x86_64/24.9/compilers/extras/qd/include/qd/qdmodule.mod
+nvfortran -I/opt/nvhpc_2024_249_Linux_x86_64_cuda_multi/install_components/Linux_x86_64/24.9/compilers/extras/qd/include/qd/qdmodule.mod -c test.f90
+
+
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/extras/qd/include/qd
+
+/opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/bin/nvfortran
+docker run -d my_openmpi_image /bin/bash -c "echo 'Hello World'; tail -f /dev/null"
+
+fedb34508831 
+docker exec -it fedb34508831 sh
+
+--allow-run-as-root 
+
+docker run -it --name mydocker  -d my_openmpi_image
+docker exec -it mydocker /bin/bash
+
+cp /Downloads/qdmodule.mod /opt/nvidia/hpc_sdk/Linux_x86_64/24.9/compilers/extras/qd/include/qd
+
+
+------------------------------------------------
+
+new docker:
+
+docker build -t nvidia_cuda .
+docker run -it nvidia_cuda /bin/bash
+docker commit eb778b4172be pymatgen_cuda
+docker cp /raid/cedsan/nvidia_cuda_docker/makefile.include" cfbeea22c3b3:/home/vasp.6.4.3
+
+curl https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg
+echo 'deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /' | sudo tee /etc/apt/sources.list.d/nvhpc.list
+sudo apt-get update -y
+sudo apt-get install -y nvhpc-23-7-cuda-multi
+----------------------------------------------------------------------------------------
+MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man; export MANPATH
+PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:$PATH; export PATH
+export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:$PATH
+export MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man
+---------------------------------------------------------------------------------------------------------
+We are having some trouble in keeping the docker container alive for longer periods of time.As we are installing packages as root user inside the docker container, the container closes abruptly midway during installation. This happens in a random fashion, with no fixed timeout period. This issue is enountered not only for installing packages, but also if we attempt to download files which take longer periods of time. 
+
+We have used Dockerfile to initialize the CUDA package in our container, and subsequently as suggested, directly installing the remaining packages as root user inside the docker container. 
+
+Currently, we are trying to compile the FORTRAN and HPC packages for VASP installation, however since it is a time taking process of about 20-30mins, the docker container does not stay alive for this period, it closes halfway through the compilation.
+
+Kindly suggest commands which we can use to keep the container alive for longer periods of time and continue our compilation/installations.
+
+Our path: /raid/cedsan/nvidia_cuda_docker/
+I am using the following commands inside this folder to initialize the container:
+
+docker build -t nvidia_cuda .  				#(image name is nvidia_cuda)
+docker run -it nvidia_cuda /bin/bash
+docker commit <container-id> nvidia_cuda  #(after any succesful installation)
+
+
+
+
+However, we have seen that the docker container 
+
+exec -u <username -it <container id> /bin/bash
+
+
+------------------------------------------------
+
+#!/bin/sh 
+#SBATCH --job-name=serial_job_test    ## Job name 
+#SBATCH --ntasks=1                    ## Run on a single CPU can take upto 10 
+#SBATCH --time=12:00:00               ## Time limit hrs:min:sec, its 12 hrs specific to queue being used 
+#SBATCH --output=serial_test_job.out  ## Standard output 
+#SBATCH --error=serial_test_job.err   ## Error log 
+#SBATCH --gres=gpu:1                  ## GPUs needed, should be same as selected queue GPUs 
+#SBATCH --partition=q_12hour-1G       ## Specific to queue being used, need to select from queues available 
+#SBATCH --mem=20GB                    ## Memory for computation process can go up to 100GB 
+
+pwd; hostname; date |tee result
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB --user $(id -u $USER):$(id -g $USER) -v <uid>_vol:/workspace/raid/<uid> <preferred_docker_image_name>:<tag> bash -c 'cd /workspace/raid/<uid>/<path to desired folder>/ && python <script to be run.py>' | tee -a log_out.txt
+
+##example for above looks like( do not include these 2 highlighted lines in your script):
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB --user $(id -u $USER):$(id -g $USER) -v cedsan_vol:/workspace/raid/secdsan secdsan_cuda:latest bash -c 'cd /workspace/raid/secdsan/gputestfolder/ && python gputest.py' | tee -a log_out.txt
+
+
+----------------------------------------------------------------------------
+
+!/bin/sh
+#SBATCH --job-name=serial_job_test     ## Job name
+#SBATCH --ntasks=1                     ## Run on a single CPU can take upto 10
+#SBATCH --time=24:00:00                ## Time limit hrs:min:sec, its specific to queue being used
+#SBATCH --output=serial_test_job.out   ## Standard output
+#SBATCH --error=serial_test_job.err    ## Error log
+#SBATCH --gres=gpu:1                   ## GPUs needed, should be same as selected queue GPUs
+#SBATCH --partition=q_1day-1G          ## Specific to queue being used, need to select from queues available
+#SBATCH --mem=20GB                      ## Memory for computation process can go up to 100GB
+
+pwd; hostname; date |tee result
+##example for above looks like( do not include these 2 highlighted lines in your script): 
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB --user $(id -u $USER):$(id -g $USER) -v /raid/cedsan/nvidia_cuda_docker nvidia_cuda bash -c 'cd /home/ && pip install pymatgen' | tee -a log_out.txt
+
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB --user $(id -u $USER):$(id -g $USER) -v <uid>_vol:/workspace/raid/<uid> <preferred_docker_image_name>:<tag> bash -c 'cd /workspace/raid/<uid>/<path to desired folder>/ && python <script to be run.py>' | tee -a log_out.txt
+
+docker exec -u cedsan -it 1667ce91750d /bin/bash
+
+
+docker run -it pymatgen_cuda /bin/bash
+
+docker build -t pymatgen_cuda .
+
+sudo -i
+
+----------------------------------
+
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+
+# Set environment variable for non-interactive apt-get installs
+ENV DEBIAN_FRONTEND=noninteractive
+#set environment variables for user credentials obtained by step 2, password can be of users choice
+ENV dockerusername=cedsan
+ENV dockeruserpassword=password
+ENV dockerusergroupid=1022
+ENV dockeruserid=17227
+ENV dockerusergroupname=ced_santanumahapatra
+
+RUN apt-get update && apt-get install -y wget bzip2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && bash /tmp/miniconda.sh -b -p /opt/miniconda && rm /tmp/miniconda.sh
+
+ENV PATH=/opt/miniconda/bin:$PATH
+
+# Update the package list and install necessary packages
+RUN apt-get update && apt-get install -y sudo \
+    python3 \
+    python3-pip \
+    build-essential \
+    gcc \
+    g++ \
+    openmpi-bin \
+    openmpi-common \
+    libopenmpi-dev
+
+# Install NumPy and SciPy
+RUN pip3 install numpy scipy
+
+#Create group and user
+RUN groupadd $dockerusergroupname -g $dockerusergroupid
+RUN useradd $dockerusername -u $dockeruserid -g $dockerusergroupid -d /home/$dockerusername
+RUN mkdir -p /home/$dockerusername && chown -R $dockerusername:$dockerusergroupid /home/$dockerusername
+
+#Set user password 
+RUN echo "$dockerusername:$dockeruserpassword" | chpasswd
+
+#Add user to sudo group
+RUN usermod -aG sudo $dockerusername 
+
+#Switch to the user for all subsequent commands
+USER $dockerusername
+
+# Set a working directory
+WORKDIR /raid/cedsan/new_docker/
+
+--------------------------------------
+
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+
+# Set environment variable for non-interactive apt-get installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+USER root
+
+RUN apt-get update && apt-get install -y wget bzip2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && bash /tmp/miniconda.sh -b -p /opt/miniconda && rm /tmp/miniconda.sh
+
+ENV PATH=/opt/miniconda/bin:$PATH
+WORKDIR /raid/cedsan/new_docker/
+---------------------------------------------
+docker commit 59c8445ab93c pymatgen_cuda
+docker run -it pymatgen_cuda /bin/bash
+
+docker cp /raid/cedsan/nvidia_cuda_docker/vasp.6.4.3/ d6760fda7eb4:/home/
+
+docker cp /raid/cedsan/nvidia_cuda_docker/makefile.include 66fbd3ee8f1a:/home/vasp.6.4.3
+docker cp /raid/cedsan/Distorted-our_structure.zip 59c8445ab93c:/home/
+
+
+/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin/nvfortran
+cd /home/vasp.6.4.3 && make DEPS=all
+
+ls -la ~/ | more
+
+
+    -e PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:$PATH \
+    -e MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man \
+    pymatgen_cuda bash -c
+
+-----------------------------
+
+#!/bin/sh
+#SBATCH --job-name=serial_job_test     ## Job name
+#SBATCH --ntasks=1                     ## Run on a single CPU can take upto 10
+#SBATCH --time=24:00:00                ## Time limit hrs:min:sec, its specific to queue being used
+#SBATCH --output=serial_test_job.out   ## Standard output
+#SBATCH --error=serial_test_job.err    ## Error log
+#SBATCH --gres=gpu:1                   ## GPUs needed, should be same as selected queue GPUs
+#SBATCH --partition=q_1day-1G          ## Specific to queue being used, need to select from queues available
+#SBATCH --mem=20GB                      ## Memory for computation process can go up to 100GB
+
+# Set NVIDIA HPC environment variables
+MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man; export MANPATH
+PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:$PATH; export PATH
+export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:$PATH
+export MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man
+module load nvhpc
+
+pwd; hostname; date |tee result
+##example for above looks like( do not include these 2 highlighted lines in your script): 
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:\$PATH && nvfortran --version" | tee -a log_out.txt
+
+#docker run -it pymatgen_cuda /bin/bash
+
+docker commit new_docker pymatgen_cuda
+
+----------------------------------------------------------------------------------------------------
+export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:\$PATH && export MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man && nvfortran --version &&
+
+
+docker commit 270e1ffb441d pymatgen_cuda
+docker run -it pymatgen_cuda /bin/bash
+
+export PATH=/home/vasp.6.4.1/vasp.6.4.1/bin:$PATH
+ls -la ~/ | more
+
+
+---------------------------------
+
+#!/bin/sh
+#SBATCH --job-name=serial_job_test     ## Job name
+#SBATCH --ntasks=1                     ## Run on a single CPU can take upto 10
+#SBATCH --time=24:00:00                ## Time limit hrs:min:sec, its specific to queue being used
+#SBATCH --output=serial_test_job.out   ## Standard output
+#SBATCH --error=serial_test_job.err    ## Error log
+#SBATCH --gres=gpu:1                   ## GPUs needed, should be same as selected queue GPUs
+#SBATCH --partition=q_1day-1G          ## Specific to queue being used, need to select from queues available
+#SBATCH --mem=20GB                      ## Memory for computation process can go up to 100GB
+
+# Set NVIDIA HPC environment variables
+MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man; export MANPATH
+PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:$PATH; export PATH
+export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:$PATH
+export MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man
+module load nvhpc
+
+pwd; hostname; date |tee result
+##example for above looks like( do not include these 2 highlighted lines in your script): 
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man && cd /home/vasp.6.4.1/vasp.6.4.1 && make veryclean && make DEPS=1 -j" | tee -a log_out.txt
+
+#docker run -it pymatgen_cuda /bin/bash
+
+docker commit new_docker pymatgen_cuda
+
+------------------------------
+
+pwd; hostname; date |tee result
+##example for above looks like( do not include these 2 highlighted lines in your script): 
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man; export PATH=/home/vasp.6.4.1/vasp.6.4.1/bin:$PATH && cd /home/MoS2_HEX && mpirun -np 1 vasp_std" | tee -a vasprun_output.txt
+
+
+docker commit 80b33561e0f6 pymatgen_cuda
+
+export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/openmpi/openmpi-3.1.5/lib:$LD_LIBRARY_PATH
+
+mpirun --allow-run-as-root -np 1 vasp_std
+
+mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std
+
+docker cp /raid/cedsan/Apenzeller.zip fbdeb2bfde2f:/home/
+
+docker run -it pymatgen_cuda /bin/bash
+
+---------------------------------
+
+docker commit b4de661a8426 manchester
+
+docker commit new_docker pymatgen_cuda
+------------------------------------------------------------------
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man; export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/openmpi/openmpi-3.1.5/lib:$LD_LIBRARY_PATH; source ~/.bashrc && cd /home/Distorted-our_structure/PHONON/PHONON/dis-03 && mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std" | tee -a vasprun_dis3_output.txt
+
+# Commit the container changes to the image
+docker commit $SLURM_JOB_ID pymatgen_cuda
+
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man; export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/openmpi/openmpi-3.1.5/lib:$LD_LIBRARY_PATH; source ~/.bashrc && cd /home/Distorted-our_structure/PHONON/PHONON/dis-04 && mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std" | tee -a vasprun_dis4_output.txt
+
+# Commit the container changes to the image
+docker commit $SLURM_JOB_ID pymatgen_cuda
+
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man; export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/openmpi/openmpi-3.1.5/lib:$LD_LIBRARY_PATH; source ~/.bashrc && cd /home/Distorted-our_structure/PHONON/PHONON/dis-05 && mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std" | tee -a vasprun_dis5_output.txt
+
+# Commit the container changes to the image
+docker commit $SLURM_JOB_ID pymatgen_cuda
+
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man; export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/openmpi/openmpi-3.1.5/lib:$LD_LIBRARY_PATH; source ~/.bashrc && cd /home/Distorted-our_structure/PHONON/PHONON/dis-06 && mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std" | tee -a vasprun_dis6_output.txt
+
+# Commit the container changes to the image
+docker commit $SLURM_JOB_ID pymatgen_cuda
+
+------------------------------------------
+
+/home/Distorted-our_structure/PHONON/PHONON/PHONON_V2/PHONONV2/dis-01
+
+/home/Distorted-our_structure/PHONON_V3/PHONON_V2/dis-01
+
+
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=200GB -v /raid/cedsan/new_docker pymatgen_cuda bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man; export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/openmpi/openmpi-3.1.5/lib:$LD_LIBRARY_PATH; source ~/.bashrc && (cd /home/Distorted-our_structure/PHONON_V3/PHONON_V2/dis-01 && mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std) && (cd /home/Distorted-our_structure/PHONON_V3/PHONON_V2/dis-02 && mpirun --allow-run-as-root -np 1 /home/vasp.6.4.3/bin/vasp_std)  " | tee -a vasprun_dis_test_v3_output.txt
+
+
+work_dir='/home/Distorted-our_structure/PHONON_V3/PHONON_V2/'
+
+cd $work_dir
+
+
+for dir in dis-0*; do
+    if [ -d "$dir" ]; then
+        echo "Processing directory: $dir"
+        
+        # Change to the directory
+        cd "$dir" || exit
+        
+        # Run VASP
+        mpirun --allow-run-as-root -np 4 /home/vasp.6.4.3/bin/vasp_std
+        
+        # Return to the parent directory
+        cd ..
+    fi
+done
+
+/home/Distorted-our_structure/PHONON_V3/PHONON_V2
+mpirun -np 2 /home/vasp.6.4.3/bin/vasp_std
+
+cd /home/Distorted-our_structure/PHONON_V3/PHONON_V2
+
+
+0f9f766ac1ac 
+
+docker cp 0da32730e55d:/home/Distorted-our_structure/PHONON_V3/PHONON_V2/dis-03 /raid/cedsan/PHONON_V2
+
+
+
+0.000 0.000 0.000     0.500 0.000 0.000    0.3333 0.3333 0.000   0.000 0.000 0.000
+
+phonopy-load --readfc --band "0.000 0.000 0.000     0.500 0.000 0.000    0.3333 0.3333 0.000   0.000 0.000 0.000" -p -s
+
+sudo du -h --max-depth=1
+rm -rf
+
+
+----------------------------------------------------------
+
+68fe5067be51 
+
+docker run -it manchester /bin/bash
+
+docker cp 68fe5067be51:/home/Distorted-our_structure/PHONON_V3/PHONON_V2/dis-03 /raid/cedsan/PHONON_V2
+
+docker cp /raid/cedsan/new_docker_v2/Distorted_structure.zip 8988f4e76712:/home/
+
+docker commit 803a10bc6746 parallel_processing
+
+
+docker cp /raid/esehai/nvhpc_2023_237_Linux_x86_64_cuda_multi.tar.gz c4b1572db45a:/home/
+
+
+docker cp 7846f08bc935:/home/3RD_IMAGE /raid/cedsan/
+docker cp /raid/esehai/makefile.include 4adfc58ee281:/home/
+
+
+docker build -t parallel_processing . 
+docker run -it parallel_processing /bin/bash
+docker commit 3f3611b318a4 parallel_processing
+
+------------------------------------------------------
+We are trying to build a docker container using the docker build steps as mentioned. However, we are getting the below error as attached in the screenshot. Kindly suggest
+
+FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
+
+#set environment variables for user credentials obtained by step 2, password can be of users choice
+ENV dockerusername=esehai
+ENV dockeruserpassword=password
+ENV dockerusergroupid=1052
+ENV dockeruserid=18220
+ENV dockerusergroupname=ese
+
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary system packages
+RUN apt-get update && apt-get install -y wget bzip2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Miniconda
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && bash /tmp/miniconda.sh -b -p /opt/miniconda && rm /tmp/miniconda.sh
+
+# Add Conda to the PATH environment variable
+ENV PATH=/opt/miniconda/bin:$PATH
+
+# To install any other packages, uncomment below line and update or leave as it is, if not needed
+#RUN apt-get install <your desired package>
+
+#Install sudo to give user root access inside docker
+RUN apt-get update && apt-get install -y sudo
+
+#Create group and user
+RUN groupadd $dockerusergroupname -g $dockerusergroupid
+RUN useradd $dockerusername -u $dockeruserid -g $dockerusergroupid -d /home/$dockerusername
+RUN mkdir -p /home/$dockerusername && chown -R $dockerusername:$dockerusergroupid /home/$dockerusername
+
+#Set user password 
+RUN echo "$dockerusername:$dockeruserpassword" | chpasswd
+
+#Add user to sudo group
+RUN usermod -aG sudo $dockerusername
+
+#Switch to the user for all subsequent commands
+USER $dockerusername
+
+---------------------------------------------------------------------------------------
+
+docker run -it manchester /bin/bash
+docker cp /raid/esehai/Popped_MoS2_new/Popped_MoS2_new/2nd_relax/ 1cae5da73772:/home/Popped_MoS2_new
+docker commit 947f54f9061f parallel_processing
+
+docker cp 1cae5da73772:/home/RELAX_APENZELLER_GRAPHENE_INTERFACE /raid/esehai/RELAX_APENZELLER_GRAPHENE_INTERFACE/
+
+
+95aec5657bab 
+
+docker cp /raid/esehai/ML_MoTe2_Distorted+Graphene/ 947f54f9061f:/home/
+docker commit 36ae8e9639c0 manchester
+7200cbe2b1d6
+20c4fabf9add
+docker cp 20c4fabf9add:/home/ML_Popped_MoS2 /raid/cedsan/ML_Popped_MoS2/
+
+docker cp /raid/cedsan/ML_Popped_MoS2/ 6c197ada75a2:/home/
+docker commit a90af59191db manchester
+731e05f91343
