@@ -1,0 +1,52 @@
+Parameterization:
+
+1. CMA-ES has 3 components
+      i. jobcollection.yaml  ii. engine_collection.yaml  iii. training_set.yaml
+	  
+A. jobcollection.yaml
+   
+   First step: Prepare the bgf format file from all the input structures by exporting co-ordinates from AMS input as bgf format. For multiple sttrcutures, repeat this process and merge all files to a single bgf file.
+   Second step: Convert this bgf format to jobcollection.yaml using below script
+   
+   #!/usr/bin/env amspython
+'''
+
+    Example reparameterization of Water2017.ff with DFT-LDA as the reference engine.
+    The training set in xyz/ includes 20 H2O geometries with a different H-OH distance.
+
+'''
+import matplotlib as mpl
+mpl.use('Agg')
+import matplotlib.pyplot as plt
+# %matplotlib inline
+
+import numpy as np
+import os,sys
+from scm.plams import *
+from scm.params import *
+from scm.params.common.helpers import _cleanup_example_folder as clean
+#clean(['Water2017.ff.optimized', 'trainingset.yaml', 'opt', 'plot*','plams_workdir', 'jobcollection.yaml'])
+
+
+totaltime = Timer()
+
+DS = DataSet()                        # Will store our reference results calculated with ADF
+EC = EngineCollection()               # Will store the Settings() for the reference Engine: In this case ADF
+callbacks = [Timeout(2*60), Logger()] # Optimize for a total of 5 min. Adjust this if the results are bad and you have time
+optimizer = CMAOptimizer(popsize=10, sigma=0.3) # CMA is population-based, meaning it will suggest `popsize` new parameter sets at every iteration.
+
+
+print('Generating job collection  ...')
+# Here we are making use of the `geo_to_params` converter function.
+# It automatically detects the geometry and settings stored in a .bgf file
+# The task for every molecule will be a Single Point, we are additionally requesting gradients
+# for every Geometry by providing the respective plams.Settings (see the documentation of `geo_to_params` for more info).
+s = Settings()
+s.input.ams.Properties.Gradients = 'True'
+s.input.ams.Task = 'SinglePoint'
+JC = geo_to_params('xyz/movie.bgf', normal_run_settings=s) # Convert a BGF file to a JobCollection instance, include `grads` in every entry.settings
+JC.store('jobcollection.yaml')
+print("Job collection stored in 'jobcollection.yaml'.")
+
+
+	Third step: 
