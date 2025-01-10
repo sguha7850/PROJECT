@@ -1,0 +1,3 @@
+VTST scripts:
+1. linear interpolation: nebmake.pl POSCAR1 POSCAR2 <no of images>
+2. IDPP interpolation : nebmake.py POSCAR1 POSCAR2 <no of images>
