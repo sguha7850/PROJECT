@@ -3,3 +3,7 @@ ELECTRIC FIELD:
 					          https://ww.vasp.at/forum/viewtopic.php?p=22394
 2. EFIELD tags: https://blog.vasp.at/forum/viewtopic.php?t=18586
 3. EFIELD_PEAD value limit : https://www.vasp.at/forum/viewtopic.php?t=19055
+
+Errors:
+1. BAD TERMINATION OF ONE OF YOUR PROCESSES:
+	Set Algo=Normal . not Fast
