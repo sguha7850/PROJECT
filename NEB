@@ -2,3 +2,34 @@ VTST scripts:
 1. linear interpolation: nebmake.pl POSCAR1 POSCAR2 <no of images>
 2. IDPP interpolation : nebmake.py POSCAR1 POSCAR2 <no of images>  - https://wiki.fysik.dtu.dk/ase/tutorials/neb/idpp.html
 3. 
+Common mistakes made:
+1. Proper mapping between atoms of the 2 endpoints is very important, specially if the unitcell is different. Do proper one to one mapping of the aotms
+2. The trajectory might not be always reversible, specially if the lattice constants are different for the 2 endpoints
+3. USe K-point sampling for NEB, gamma is useless.
+4. INCAR file which worked for me:
+SYSTEM  = 2H-MoS2
+ISTART=0
+ENCUT=400
+ALGO=Fast
+IBRION=3
+ISIF=2
+NSW=200
+EDIFF=1.0e-05
+ISYM=0
+LREAL=.FALSE.
+ISMEAR=0
+SIGMA=0.1
+PREC=Med
+ADDGRID=.TRUE.
+NWRITE=1
+LCHARG=.FALSE.
+LWAVE=.FALSE.
+LCLIMB = .TRUE.
+IMAGES= 4
+SPRING= -5.0
+ICHAIN= 0
+#LDIPOL = .TRUE.
+#IDIPOL = 3   # for Z direction
+#EFIELD = 1.5   # eV/A**
+#DIPOL = 0.0 0.0 0.5 
+#LNEBCELL = .TRUE
