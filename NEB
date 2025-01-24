@@ -6,6 +6,7 @@ Common mistakes made:
 1. Proper mapping between atoms of the 2 endpoints is very important, specially if the unitcell is different. Do proper one to one mapping of the aotms
 2. The trajectory might not be always reversible, specially if the lattice constants are different for the 2 endpoints
 3. USe K-point sampling for NEB, gamma is useless.
+4. IBRION=2 is not suitable for NEB
 4. INCAR file which worked for me:
 SYSTEM  = 2H-MoS2
 ISTART=0
