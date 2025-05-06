@@ -1,0 +1,10 @@
+When running VASP in PARAM Pravega, first need to load the following modules:
+
+source /opt/ohpc/admin/lmod/8.1.18/init/csh
+module load spack
+source /home-ext/apps/spack/share/spack/setup-env.csh
+spack load fftw@3.3.10%intel@2021.5.0 /tphl5ba
+spack load intel-oneapi-mpi@2021.5.0
+spack load intel-oneapi-mkl/iafmkap
+spack load intel-oneapi-compilers@2022.0.1
+spack load intel-oneapi-tbb/squ4h5s
