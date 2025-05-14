@@ -153,3 +153,107 @@ f1.close()
 for i in range(structure.num_sites):
     f2.writelines("{:14f} {:14f} {:14f}\n".format(structure.cart_coords[i][0],structure.cart_coords[i][1],structure.cart_coords[i][2]))  
 f2.close()
+
+--------------------------------------------------------------
+
+STRAIN:
+
+from ase.io import read, write
+import numpy as np
+
+# Load the POSCAR file
+structure = read('POSCAR')  # Assumes the input file is named 'POSCAR'
+
+# Apply tensile strain of 0.5%
+strain = 0.005  # 0.5% tensile strain
+
+# Create the strain matrix for uniaxial strain along a specific direction (e.g., z-axis)
+strain_matrix = np.identity(3)  # Start with the identity matrix
+strain_matrix[2, 2] += strain   # Apply strain along the z-axis (modify as needed)
+
+# Apply the strain to the cell
+cell = structure.cell  # Original lattice vectors
+new_cell = np.dot(cell, strain_matrix)  # Apply strain
+structure.set_cell(new_cell, scale_atoms=True)  # Update cell and rescale atomic positions
+
+# Save the modified structure to a new POSCAR file
+write('POSCAR_strained', structure, vasp5=True)
+
+
+#CUDA_VISIBLE_DEVICES=0,2 mpirun -np 2 vasp_std
+
+--------------------------------------------------------
+
+NEB:
+
+from ase import io
+from ase.neb import NEB
+from ase.optimize import BFGS
+from ase.calculators.vasp import Vasp
+
+# Load initial and final structures
+initial = io.read("POSCAR1")
+final = io.read("POSCAR2")
+
+# Number of intermediate images
+n_images = 5  # Adjust as needed
+
+# Create NEB object with interpolated images
+images = [initial]
+images += [initial.copy() for _ in range(n_images)]
+images.append(final)
+neb = NEB(images)
+neb.interpolate()
+
+# Set up VASP calculator
+calc = Vasp(xc='PBE',
+            encut=400,
+            kpts=[3, 3, 3],  # Adjust k-point mesh
+            ibrion=1,  # Optimizer
+            isif=2,
+            nsw=100,  # Number of ionic steps
+            lreal='Auto',
+            ediff=1e-4,  # Convergence criterion
+            lwave=False,
+            lcharg=False)
+
+# Assign calculator to all images
+for image in images:
+    image.set_calculator(calc)
+
+# Optimize NEB path
+optimizer = BFGS(neb)
+optimizer.run(fmax=0.05)  # Convergence criterion for forces
+
+# Save images for visualization
+for i, image in enumerate(images):
+    io.write(f'POSCAR_neb_{i}', image)
+
+-------------------------------------------------
+
+ESPRESSO DOS:
+
+import matplotlib.pyplot as plt
+from matplotlib import rcParamsDefault
+import numpy as np
+
+
+# load data
+energy, dos, idos = np.loadtxt('MoS2_dos.dat', unpack=True)
+
+# make plot
+plt.figure(figsize = (12, 6))
+plt.plot(energy, dos, linewidth=0.75, color='red')
+plt.yticks([])
+plt.xlabel('Energy (eV)')
+plt.ylabel('DOS')
+plt.axvline(x=6.642, linewidth=0.5, color='k', linestyle=(0, (8, 10)))
+plt.xlim(-6, 16)
+plt.ylim(0, )
+plt.fill_between(energy, 0, dos, where=(energy < 6.642), facecolor='red', alpha=0.25)
+plt.text(6, 1.7, 'Fermi energy', fontsize= med, rotation=90)
+plt.show()
+
+---------------------------------------------------------
+
+
