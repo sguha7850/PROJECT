@@ -255,5 +255,7 @@ plt.text(6, 1.7, 'Fermi energy', fontsize= med, rotation=90)
 plt.show()
 
 ---------------------------------------------------------
-
+BADER Charge analysis:
+1. https://www.youtube.com/watch?v=AqcwXPu93zQ&ab_channel=ThomasManz
+2. https://www.youtube.com/watch?v=hVO-E2dO-dE&ab_channel=PhysWhiz
 
