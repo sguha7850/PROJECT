@@ -1,0 +1,16 @@
+WSL:
+
+1. run windows powershell - wsl --install --> UBUNTU will be installed
+2. issues and resolve them:
+create virtual env in ubuntu suing the following commands:
+
+sudo apt install python3-venv
+python3 -m venv vvv
+source vvv/bin/activate
+
+To install new packages:
+1. sudo add-apt-repository universe
+2. sudo apt-get install python3-pip
+
+Install phonopy using pip method
+                            
