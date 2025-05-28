@@ -8,3 +8,23 @@ spack load intel-oneapi-mpi@2021.5.0
 spack load intel-oneapi-mkl/iafmkap
 spack load intel-oneapi-compilers@2022.0.1
 spack load intel-oneapi-tbb/squ4h5s
+
+job script:
+#!/bin/bash
+#SBATCH --job-name Au
+#SBATCH --partition=highmemory
+#SBATCH --nodes=5
+#SBATCH --tasks-per-node=48
+#SBATCH --cpus-per-task=1
+#SBATCH --time=05:00:00
+#SBATCH --output=8image_withoutEfield_v3
+#SBATCH --export=ALL
+#SBATCH -A cedsan_nsm
+# MPI Resources
+NN=240
+N="-n $NN -ppn 48"
+DATA_DIR="/scratch/cedsan/sourav/Interface_Graphene_Distorted/"
+cd "$DATA_DIR"
+mpirun -np 240 /scratch/cedsan/sourav/vasp/vasp.6.2.0/bin/vasp_std | tee vasp_output.txt
+
+Note: according to this job script, put NCORE=48 tag in INCAR
