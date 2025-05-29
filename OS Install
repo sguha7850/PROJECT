@@ -3,4 +3,11 @@ LInux OS Installation:
 1. while booting from external pendrive, choose gui mode, not text mode
 2.set the adresss in the gui mode, however, it will not work most probably. so we have to manually set the internet in command line
     1. nmcli connection
-       
+
+
+3. disk partitioning:
+    1.Adding Physical Volumes to a Volume Group - # vgextend vg1 /dev/sdf1  https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/6/html/logical_volume_manager_administration/vg_grow
+    2.Partitioning existing LVM partition? - https://askubuntu.com/questions/1048941/partitioning-existing-lvm-partition
+    3.https://askubuntu.com/questions/1048941/partitioning-existing-lvm-partition - https://askubuntu.com/questions/24027/how-can-i-resize-an-ext-root-partition-at-runtime
+    4. 
+
