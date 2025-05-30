@@ -18,6 +18,7 @@ export PATH=$PATH:/usr/lib64/openmpi/bin/
 
 PACKAGES NEEDED:
 1. SCALAPACK 2. FFTW 3. NVHPC 4. CUDA TOOLKIT 5. CUDA DRIVER 6. OPENMPI 7.
+sudo dnf install lapack-devel
 
 4V100 FEDORA fresh installation bash rc
 
