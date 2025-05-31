@@ -1,0 +1,12 @@
+sudo dnf install x11vnc
+x11vnc --storepasswd
+systemctl status display-manager.service
+ip a
+sudo systemctl enable --now sshd
+sudo ss -tulpn | grep :5900
+sudo firewall-cmd --permanent --add-port=5900/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-ports
+
+sudo x11vnc - noshm
+ps aux | grep x11vnc
