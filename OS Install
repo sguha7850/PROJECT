@@ -11,3 +11,8 @@ LInux OS Installation:
     3.https://askubuntu.com/questions/1048941/partitioning-existing-lvm-partition - https://askubuntu.com/questions/24027/how-can-i-resize-an-ext-root-partition-at-runtime
     4. 
 
+FEDORA Issue stuck on Running Transaction:
+
+sudo rm -f /usr/lib/sysimage/rpm/.rpm.lock
+sudo rm -f /var/lib/rpm/.rpm.lock
+sudo rpm --rebuilddb
