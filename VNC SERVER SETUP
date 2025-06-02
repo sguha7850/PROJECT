@@ -10,3 +10,8 @@ sudo firewall-cmd --list-ports
 
 sudo x11vnc - noshm
 ps aux | grep x11vnc
+
+
+Check whether gnome is installed or not:
+1.dnf group list --installed | grep GNOME
+2.rpm -q gnome-shell
