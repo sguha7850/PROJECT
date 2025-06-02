@@ -7,6 +7,10 @@ ELECTRIC FIELD:
 Errors:
 1. BAD TERMINATION OF ONE OF YOUR PROCESSES:
 	Set Algo=Normal . not Fast
+2. Catastrophic error while installing , some problem related to <vector>
+ 	sudo dnf install gcc-c++ gcc gcc-gfortran make
+        sudo dnf groupinstall "Development Tools"
+        
 
 
 export LD_LIBRARY_PATH=/usr/local/cuda/lib
