@@ -36,4 +36,7 @@ export MANPATH=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/compilers/man:$MANPATH
 export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/comm_libs/mpi/bin:$PATH
 export LD_LIBRARY_PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/compilers/extras/qd/lib/:/usr/tools/lib:/opt/nvidia/hpc_sdk/Linux_x86_64/25.5/comm_libs/12.9/openmpi4/openmpi-4.1.5/lib:$LD_LIBRARY_PATH
 
-
+Nvdia-smi not found error: how to resolve:
+After installing cuda:
+        1. sudo dnf module disable nvidia-driver
+        2. sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda
