@@ -35,3 +35,14 @@ For variable compostion, uspex not moving to 2nd generation:
 What worked for me: download and reinstall matlab runtime - v91 folder
 
 ------------------------------------------------------------------------------------------------
+sudo chown -R sourav:sourav /home/sourav/EX31_V4/VCNEB_HEX_to_T/
+
+sudo dnf install libxcrypt-compat
+
+sudo dnf install execstack
+sudo execstack -c /usr/local/MATLAB/MATLAB_Runtime/v91/bin/glnxa64/libmwblas.so
+sudo execstack -c /usr/local/MATLAB/MATLAB_Runtime/v91/bin/glnxa64/libmwlapack.so
+
+export MCRROOT=/usr/local/MATLAB/MATLAB_Runtime
+export USPEXPATH=/usr/local/USPEX_v10.5/application/archive/src/
+export PATH=/usr/local/USPEX_v10.5/application/archive/:$PATH
