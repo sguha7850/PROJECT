@@ -46,3 +46,10 @@ sudo execstack -c /usr/local/MATLAB/MATLAB_Runtime/v91/bin/glnxa64/libmwlapack.s
 export MCRROOT=/usr/local/MATLAB/MATLAB_Runtime
 export USPEXPATH=/usr/local/USPEX_v10.5/application/archive/src/
 export PATH=/usr/local/USPEX_v10.5/application/archive/:$PATH
+
+vasp_std: /usr/local/MATLAB/MATLAB_Runtime/v91/sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.29' not found (required by vasp_std)
+vasp_std: /usr/local/MATLAB/MATLAB_Runtime/v91/sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.30' not found (required by vasp_std)
+vasp_std: /usr/local/MATLAB/MATLAB_Runtime/v91/sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.32' not found (required by vasp_std)
+vasp_std: /usr/local/MATLAB/MATLAB_Runtime/v91/sys/os/glnxa64/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by vasp_std)
+vasp_std: /usr/local/MATLAB/MATLAB_Runtime/v91/sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX_3.4.21' not found (required by /opt/nvidia/hpc_sdk/Linux_x86_64/25.5/compilers/extras/qd/lib/libqd.so.0)
+
