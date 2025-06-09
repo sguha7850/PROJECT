@@ -15,3 +15,25 @@ ps aux | grep x11vnc
 Check whether gnome is installed or not:
 1.dnf group list --installed | grep GNOME
 2.rpm -q gnome-shell
+
+
+WORKING:
+vncserver setup:
+
+sudo dnf install tigervnc-server
+vncpasswd
+mkdir -p ~/.vnc
+nano ~/.vnc/xstartup
+
+OPTIONAL: 
+#!/bin/sh
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+exec gnome-session &
+
+chmod +x ~/.vnc/xstartup
+vncserver
+ss -tulpn | grep 5902 (ASSUMING IN PREVIOUS STEP PORT 2 WAS USED)
+sudo firewall-cmd --add-port=5902/tcp --permanent
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-ports
