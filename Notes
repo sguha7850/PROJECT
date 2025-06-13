@@ -78,6 +78,36 @@ plotter.get_plot(xlim=(-6, 5), ylim=(0, 14))
 plt.savefig('MoS2_dos.pdf', dpi=500)
 
 --------------------------------------------------------------------------------------
+GENERATE BOTH DOS PLOT AND DATA
+from pymatgen.io.vasp.outputs import Vasprun
+from pymatgen.electronic_structure.core import Spin
+
+# Load vasprun.xml
+result = Vasprun("vasprun.xml", parse_potcar_file=False)
+tdos = result.tdos
+
+energies = tdos.energies - result.efermi
+densities = tdos.densities
+
+with open("MoS2_dos.dat", "w") as f:
+    if isinstance(densities, dict):
+        if Spin.up in densities and Spin.down in densities:
+            f.write("# Energy (eV)    DOS_Up    DOS_Down\n")
+            for e, up, down in zip(energies, densities[Spin.up], densities[Spin.down]):
+                f.write(f"{e:.6f}   {up:.6f}   {down:.6f}\n")
+        elif Spin.up in densities:
+            f.write("# Energy (eV)    DOS_Up\n")
+            for e, up in zip(energies, densities[Spin.up]):
+                f.write(f"{e:.6f}   {up:.6f}\n")
+        else:
+            f.write("# Energy (eV)    DOS\n")
+            for e, d in zip(energies, list(densities.values())[0]):
+                f.write(f"{e:.6f}   {d:.6f}\n")
+    else:
+        f.write("# Energy (eV)    Total DOS\n")
+        for e, d in zip(energies, densities):
+            f.write(f"{e:.6f}   {d:.6f}\n")
+-------------------------------------------------------------------------------------------------
 
 
 #Generate band diagram plot using pymatgen and vasprun.xml
