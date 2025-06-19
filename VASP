@@ -42,3 +42,177 @@ Nvdia-smi not found error: how to resolve:
 After installing cuda:
         1. sudo dnf module disable nvidia-driver
         2. sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda
+
+-----------------------------------------------------------------------------------------
+
+VASP installation using DOCKER
+1.DOCKERFILE:
+--------------------------------------------------
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
+
+# Set environment variable for non-interactive apt-get installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+USER root
+
+RUN apt-get update && apt-get install -y wget bzip2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh && bash /tmp/miniconda.sh -b -p /opt/miniconda && rm /tmp/miniconda.sh
+
+ENV PATH=/opt/miniconda/bin:$PATH
+
+RUN apt-get update && apt-get install -y sudo \
+    python3 \
+    python3-pip \
+    build-essential \
+    gcc \
+    g++ \
+    openmpi-bin \
+    openmpi-common \
+    libopenmpi-dev \
+    rsync
+
+WORKDIR /
+
+----------------------------------------------------------
+
+2. Install Nvidia HPC SDK and FFTW
+3. batch file to install vasp
+-----------------------------------
+
+#!/bin/sh
+#SBATCH --job-name=serial_job_test     ## Job name
+#SBATCH --ntasks=1                     ## Run on a single CPU can take upto 10
+#SBATCH --time=24:00:00                ## Time limit hrs:min:sec, its specific to queue being used
+#SBATCH --output=serial_test_job.out   ## Standard output
+#SBATCH --error=serial_test_job.err    ## Error log
+#SBATCH --gres=gpu:1                   ## GPUs needed, should be same as selected queue GPUs
+#SBATCH --partition=q_1day-1G          ## Specific to queue being used, need to select from queues available
+#SBATCH --mem=20GB                      ## Memory for computation process can go up to 100GB
+
+# Set NVIDIA HPC environment variables
+MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man; export MANPATH
+PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:$PATH; export PATH
+export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:$PATH
+export MANPATH=$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man
+module load nvhpc
+
+pwd; hostname; date |tee result
+##example for above looks like( do not include these 2 highlighted lines in your script): 
+docker run -t --gpus '"device='$CUDA_VISIBLE_DEVICES'"' --name $SLURM_JOB_ID --ipc=host --shm-size=20GB -v /raid/esehai/new_docker docker_dp1 bash -c "export PATH=/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/bin:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/bin:\$PATH;
+export MANPATH=\$MANPATH:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/compilers/man:/opt/nvidia/hpc_sdk/Linux_x86_64/23.7/comm_libs/mpi/man && cd /home/vasp.6.4.3/ && make veryclean && make DEPS=1 -j" | tee -a log_vasp.6.4.3_out.txt
+
+#docker run -it pymatgen_cuda /bin/bash
+
+docker commit $SLURM_JOB_ID docker_dp1
+
+--------------------------------------------------------------------------------
+4. makefile.include file
+---------------------------------------------------------------
+# Default precompiler options
+CPP_OPTIONS = -DHOST=\"LinuxNV\" \
+              -DMPI -DMPI_BLOCK=8000 -Duse_collective \
+              -DscaLAPACK \
+              -DCACHE_SIZE=4000 \
+              -Davoidalloc \
+              -Dvasp6 \
+              -Duse_bse_te \
+              -Dtbdyn \
+              -Dqd_emulate \
+              -Dfock_dblbuf \
+              -D_OPENACC \
+              -DUSENCCL -DUSENCCLP2P \
+              -Duse_shmem
+
+CPP         = nvfortran -Mpreprocess -Mfree -Mextend -E $(CPP_OPTIONS) $*$(FUFFIX)  > $*$(SUFFIX)
+
+# N.B.: you might need to change the cuda-version here
+#       to one that comes with your NVIDIA-HPC SDK
+FC          = mpif90 -acc -gpu=cc70,cuda12.2
+FCL         = mpif90 -acc -gpu=cc70,cuda12.2 -c++libs
+
+FREE        = -Mfree
+
+FFLAGS      = -Mbackslash -Mlarge_arrays
+
+OFLAG       = -fast
+
+DEBUG       = -Mfree -O0 -traceback
+
+OBJECTS     = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
+
+LLIBS       = -cudalib=cublas,cusolver,cufft,nccl -cuda
+
+# Redefine the standard list of O1 and O2 objects
+SOURCE_O1  := pade_fit.o
+SOURCE_O2  := pead.o
+
+# For what used to be vasp.5.lib
+CPP_LIB     = $(CPP)
+FC_LIB      = nvfortran
+CC_LIB      = nvc -w
+CFLAGS_LIB  = -O
+FFLAGS_LIB  = -O1 -Mfixed
+FREE_LIB    = $(FREE)
+
+OBJECTS_LIB = linpack_double.o getshmem.o
+
+# For the parser library
+CXX_PARS    = nvc++ --no_warnings
+
+##
+## Customize as of this point! Of course you may change the preceding
+## part of this file as well if you like, but it should rarely be
+## necessary ...
+##
+# When compiling on the target machine itself , change this to the
+# relevant target when cross-compiling for another architecture
+VASP_TARGET_CPU = -tp host
+FFLAGS     += $(VASP_TARGET_CPU)
+
+# Specify your NV HPC-SDK installation (mandatory)
+#... first try to set it automatically
+NVROOT      =$(shell which nvfortran | awk -F /compilers/bin/nvfortran '{ print $$1 }')
+
+# If the above fails, then NVROOT needs to be set manually
+#NVHPC      ?= /opt/nvidia/hpc_sdk
+#NVVERSION   = 21.11
+#NVROOT      = $(NVHPC)/Linux_x86_64/$(NVVERSION)
+
+## Improves performance when using NV HPC-SDK >=21.11 and CUDA >11.2
+OFLAG_IN   = -fast -Mwarperf
+SOURCE_IN  := nonlr.o
+
+# Software emulation of quadruple precsion (mandatory)
+QD          = $(NVROOT)/compilers/extras/qd
+LLIBS      += -L$(QD)/lib -lqdmod -lqd
+INCS       += -I$(QD)/include/qd
+
+# BLAS (mandatory)
+BLAS        = -lblas
+
+# LAPACK (mandatory)
+LAPACK      = -llapack
+
+# scaLAPACK (mandatory)
+SCALAPACK   = -Mscalapack
+
+LLIBS      += $(SCALAPACK) $(LAPACK) $(BLAS)
+
+# FFTW (mandatory)
+FFTW_ROOT   = /usr/local
+LLIBS      += -L$(FFTW_ROOT)/lib -lfftw3
+INCS       += -I$(FFTW_ROOT)/include
+
+# HDF5-support (optional but strongly recommended)
+#CPP_OPTIONS+= -DVASP_HDF5
+#HDF5_ROOT   = /tools/hdf5-1.14.0_nv/build
+#LLIBS      += -L$(HDF5_ROOT)/lib -lhdf5_fortran
+#INCS       += -I$(HDF5_ROOT)/include
+
+# For the VASP-2-Wannier90 interface (optional)
+#CPP_OPTIONS    += -DVASP2WANNIER90
+#WANNIER90_ROOT  = /tools/wannier90-3.1.0.2_nv
+#LLIBS          += -L$(WANNIER90_ROOT) -lwannier
+
+
+----------------------------------------------------------------------------
