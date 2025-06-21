@@ -63,3 +63,8 @@ To resolve this: (For FEDORA system)
 2. Create a new directory named "old": mkdir old
 3. Move libstdc++* into the old directory:
 4. copy system libstdc++ file from /usr/lib64/libstdc++.so.6.0.34 and paste it in glnxa64 folder
+-----------------------------------------------------
+
+install.sh: line 144: ./USPEX_MATLABruntime.install: Permission denied
+
+solution: chmod +x USPEX_MATLABruntime.install while inside USPEX folder
