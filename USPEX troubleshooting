@@ -65,6 +65,28 @@ To resolve this: (For FEDORA system)
 4. copy system libstdc++ file from /usr/lib64/libstdc++.so.6.0.34 and paste it in glnxa64 folder
 -----------------------------------------------------
 
+Installing pylada package for running pmpaths.py script for VCNEB (critical)
+steps (fedora system:
+1. sudo dnf install python3-devel
+2. install pylada in dev mode:
+  python3 -m venv pylada
+  source pylada/bin/activate
+  git clone https://github.com/pylada/pylada-light
+  cd pylada-light
+  python3 -m pip install cython setuptools wheel scikit-build cmake ninja numpy
+  python3 -m pip install -e .[dev]
+3.CMake steps:
+  cd into the pylada directory containing CMakelists.txt file
+  cmake .
+  ccmake .
+  make
+  make install
+4. check if pylada working or not
+  go to python shell and run import pylada
+
+---------------------------------------------------------------------------------------------
+  
+
 install.sh: line 144: ./USPEX_MATLABruntime.install: Permission denied
 
 solution: chmod +x USPEX_MATLABruntime.install while inside USPEX folder
