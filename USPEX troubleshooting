@@ -83,6 +83,7 @@ steps (fedora system:
   make install
 4. check if pylada working or not
   go to python shell and run import pylada
+5. to enable local users to use pylada, copy this pylada venv and pylada-light folders to the user's home location and give write access.
 
 ---------------------------------------------------------------------------------------------
   
