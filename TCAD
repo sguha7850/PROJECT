@@ -1,0 +1,42 @@
+1. pn junction breakdown
+------------------------------------------------------------------------
+go atlas
+mesh
+x.m 1=0.0 spac=1.0
+x.m 1=1.0 spac=1.0
+y.m 1=0.0 spac=1.0
+y.m 1=5.0 spac=0.005
+y.m 1=15 spac=2.0
+
+
+region num=1 silicon
+
+electrode top name=cathode
+electrode bottom name=anode
+
+doping uniform p.type conc=1e15
+doping uniform n.type conc=1e22 x.1=0 x.r=1 y.t=0.0 y.b=5.0
+
+models srh conmob bgn auger fldmob
+impact selb
+method newton climit=1.e-5
+
+output band.param con.band val.band e.field band.temp
+solve init
+
+save outf=pnjunction1.str
+
+curvetrace end.val=1e-4 contr.name=cathode curr.cont mincur=1e-3 nextst.ratio=1.02 step.init=0.05
+log outf=pnjunc_reverse_test.log
+solve curvetrace
+
+#solve vanode=0 vstep=0.05 name=anode vfinal=3
+#log off
+
+tonyplot pnjunc_reverse_test.log
+
+quit
+
+-----------------------------------------------------------------------------
+
+
