@@ -20,13 +20,15 @@ electrode name=anode   x.min=0   x.max=0.1 y.min=0 y.max=1
 electrode name=cathode x.min=1.9 x.max=2   y.min=0 y.max=1
 
 # Doping
-doping region=1 uniform p.type conc=1e18
-doping region=2 uniform n.type conc=1e18
+doping region=1 uniform p.type conc=1e20
+doping region=2 uniform n.type conc=1e20
+
 
 # Models and material
-material material=silicon
-models conmob boltzman print temperature=300
+material material=silicon TAUN=2e-6 TAUP=2e-6
+models consrh conmob boltzman print temperature=300
 method newton trap
+
 
 #output
 output con.band val.band QFN QFP 
@@ -35,24 +37,26 @@ output con.band val.band QFN QFP
 solve init
 
 # Save initial structure
-save outf=pnjunction_forward.str
-tonyplot pnjunction_forward.str
+
 
 # Set initial conditions
 solve init
 
 
 # Begin logging
-log outf=pn_forward_iv.log
-
+log outf=pn_forward_iv_new_tau_2e6.log
+solve vcathode=0
 # Sweep anode voltage from 0 to +1V (forward bias)
-solve vanode=0 vstep=0.1 name=anode vfinal=3
+solve vanode=0 vstep=0.01 name=anode vfinal=3
+#solve vanode=1.5 vcathode=0
 
+save outf=pnjunction_forward.str
+tonyplot pnjunction_forward.str
 # End logging
 log off
 
 # Plot IV
-tonyplot pn_forward_iv.log
+tonyplot pn_forward_iv_new_tau_2e6.log
 
 quit
 ----------------------------------------------------
@@ -82,13 +86,14 @@ method newton climit=1.e-5
 output band.param con.band val.band e.field band.temp
 solve init
 
-save outf=pnjunction1.str
+
 
 curvetrace end.val=1e-4 contr.name=cathode curr.cont mincur=1e-3 nextst.ratio=1.02 step.init=0.05
 log outf=pnjunc_reverse_test.log
 solve curvetrace
 
 #solve vanode=0 vstep=0.05 name=anode vfinal=3
+save outf=pnjunction1.str
 #log off
 
 tonyplot pnjunc_reverse_test.log
