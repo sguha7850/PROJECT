@@ -216,3 +216,11 @@ INCS       += -I$(FFTW_ROOT)/include
 
 
 ----------------------------------------------------------------------------
+Exchange-correlational functionals:
+1. GGA-PBE (standard) - Default in VASP, also specified by LEXCH in POTCAR
+2. PBE-D3 - Add IVDW=12/11
+3. PBE-rev-vdw-DF2 - 
+	1. GGA= RE (for revPBE)
+	2. IVDW=10
+
+4. 
