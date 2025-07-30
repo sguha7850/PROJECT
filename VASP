@@ -216,6 +216,33 @@ INCS       += -I$(FFTW_ROOT)/include
 
 
 ----------------------------------------------------------------------------
+Optimized INCAR:
+ICHARG = 2
+ISTART = 0
+
+#SCF
+ALGO = N
+ENCUT = 600
+EDIFF = 1e-5
+PREC = Normal
+
+#Relax
+IBRION = 3
+ISIF = 2
+POTIM = 0
+IOPT = 3
+LTWODIM = True
+NSW = 200
+EDIFFG = -0.02
+MAXMOVE = 0.2
+TIMESTEP = 0.1
+
+LCHARG = True
+LREAL = Auto
+LWAVE = False
+ADDGRID = .TRUE.
+
+-------------------------------------------------------------------------------
 Exchange-correlational functionals:
 1. GGA-PBE (standard) - Default in VASP, also specified by LEXCH in POTCAR
 2. PBE-D3 - Add IVDW=12/11
