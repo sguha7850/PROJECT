@@ -283,5 +283,65 @@ tonyplot esdex02new4_tr.log
 tonyplot esdex02new4_tr.log 
 
 quit
+-------------------------------------------
+
+go atlas
+
+mesh space.mult=1
+
+# Mesh
+x.mesh loc=0   spac=0.1
+x.mesh loc=1   spac=0.05
+x.mesh loc=2   spac=0.1
+y.mesh loc=0   spac=0.1
+y.mesh loc=1   spac=0.1
+
+# Regions
+region num=1 silicon x.min=0 x.max=1 y.min=0 y.max=1
+region num=2 silicon x.min=1 x.max=2 y.min=0 y.max=1
+
+# Electrodes
+electrode name=anode   x.min=0   x.max=0.1 y.min=0 y.max=1
+electrode name=cathode x.min=1.9 x.max=2   y.min=0 y.max=1
+
+# Doping
+doping region=1 uniform p.type conc=1e20
+doping region=2 uniform n.type conc=1e20
 
 
+save outf=pnjunction_forward.str
+#tonyplot pnjunction_forward.str
+
+go atlas
+
+.begin
+#V1 1 0 1
+V1 1 0 PULSE(-1.5 1.5 0n 0.2n 0.2n 10n 20n)
+#c1 2 0 10p
+#l1 1 2 5nH
+r1 1 2 200
+aesd 2=anode 0=cathode width=10 infile=pnjunction_forward.str
+#aesd 2=anode 0=cathode width=10 infile=pnjunction_forward.str
+.NUMERIC LTE=0.3 TOLTR=1.E-5 VCHANGE=10.
+ 
+#.ic v(1)=10  
+.options  print relpot WRITE=10
+.tran 0.01ns  40ns
+ 
+#.load  infile=esdex02_dc
+.log   outfile=pn_neg_1ohm_tau1e8_new
+.end
+
+#thermcontact num=1 device=aesd y.min=2 y.max=2 ext.temp=300 alpha=1000
+models device=aesd region=1 conmob srh  
+mater  device=aesd  region=1 taup=1e-8 taun=1e-8
+impact device=aesd reg=1 selb
+#method tol.ltemp=0.01 max.temp=3000 climit=1000
+METHOD CLIM.DD=1.E8 DVMAX=1.E6
+
+go atlas
+tonyplot pn_neg_1ohm_tau1e8_new_tr.log 
+tonyplot pn_neg_1ohm_tau1e8_new_tr.log 
+
+quit
+------------------------------------------------------------
