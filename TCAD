@@ -345,3 +345,73 @@ tonyplot pn_neg_1ohm_tau1e8_new_tr.log
 
 quit
 ------------------------------------------------------------
+Point-contact transistor
+
+go atlas
+
+mesh space.mult=1
+
+# Mesh
+#x.mesh loc=0   spac=0.05
+#x.mesh loc=1   spac=0.05
+#y.mesh loc=-0.1   spac=0.1
+#y.mesh loc=2   spac=0.1
+
+x.mesh loc=0    spac=0.1
+x.mesh loc=0.3  spac=0.01    
+x.mesh loc=0.4  spac=0.01    
+x.mesh loc=0.6  spac=0.01    
+x.mesh loc=0.7  spac=0.01  
+x.mesh loc=1    spac=0.1
+y.mesh loc=0   spac=0.1
+y.mesh loc=2   spac=0.1
+
+# Regions
+region num=1 silicon x.min=0 x.max=1 y.min=0 y.max=0.3
+region num=2 silicon x.min=0 x.max=1 y.min=0.3 y.max=2
+
+# Electrodes
+electrode name=emitter   x.min=0.3   x.max=0.4 y.min=0 y.max=0
+electrode name=collector x.min=0.6   x.max=0.7   y.min=0 y.max=0
+electrode name=base x.min=0.3   x.max=0.7   y.min=2 y.max=2
+
+# Doping
+doping region=1 uniform p.type conc=1e19
+doping region=2 uniform n.type conc=1e20
+
+
+# Models and material
+material material=silicon 
+models consrh conmob boltzman print temperature=300
+method newton trap
+#output
+output con.band val.band QFN QFP 
+
+# Initial solve
+solve init
+
+# Save initial structure
+
+
+# Set initial conditions
+solve init
+
+# Begin logging
+log outf=point_iv.log
+solve vbase=0
+# Sweep anode voltage from 0 to +1V (forward bias)
+solve vemitter=0 vstep=0.01 name=emitter vfinal=2
+solve vcollector = -5
+#solve vanode=1.5 vcathode=0
+
+#output
+#output con.band val.band QFN QFP 
+save outf=point.str
+tonyplot point.str
+
+log off
+
+# Plot IV
+tonyplot point_iv.log
+
+quit
