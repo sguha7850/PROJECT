@@ -1,1 +1,4 @@
 1. https://phonopy.github.io/phonopy/vasp-dfpt.html
+DOS: phonopy-load --mesh 20 20 20 -p
+BAND: phonopy-load --band "0.5 0.5 0.5  0.0 0.0 0.0  0.5 0.5 0.0  0.0 0.5 0.0" -p
+https://phonopy.github.io/phonopy/vasp.html
