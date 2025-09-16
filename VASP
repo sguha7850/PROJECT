@@ -259,3 +259,8 @@ for i in {1..150}; do
     mpirun -np 2 vasp_std
     cd ..
 done
+----------
+for i in {1..40}; do
+    energy=$(grep "TOTEN" structure$i/OUTCAR | tail -1 | awk '{print $5}')
+    echo "structure$i: $energy eV"
+done
