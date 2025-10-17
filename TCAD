@@ -548,3 +548,71 @@ tonyplot mosexp_vg_1.3.log
 save outf=mosexp_vg_1.3.str
 tonyplot mosexp_vg_1.3.str
 quit
+-------------------
+
+MOSFET:
+
+go atlas
+
+mesh space.mult=0.7
+
+x.mesh loc=0.00 spac=0.1
+x.mesh loc=1 spac=0.1
+
+y.mesh loc=-0.09 spac=0.001
+y.mesh loc=-0.089 spac=0.001
+y.mesh loc=0.05 spac=0.001
+y.mesh loc=0.3 spac=0.1
+
+
+
+region number=1 x.min=0 x.max=0.286 y.min=-0.09 y.max=-0.089 material=air
+region number=2 x.min=0.714 x.max=1 y.min=-0.09 y.max=-0.089 material=air
+
+region number=3 x.min=0.286 x.max=0.714 y.min=-0.09 y.max=-0.089 material=SiO2
+region number=4 x.min=0 x.max=1 y.min=-0.089 y.max=0.3 material=Silicon
+region number=5 x.min=0 x.max=0.286 y.min=-0.089 y.max=0 material=Silicon
+region number=6 x.min=0.714 x.max=1 y.min=-0.089 y.max=0 material=Silicon
+
+
+electrode name=source x.min=0 x.max=0.286 y.min=-0.089 y.max=-0.089
+electrode name=drain x.min=0.714 x.max=1 y.min=-0.089 y.max=-0.089
+electrode name=gate x.min=0.25 x.max=0.75 y.min=-0.1 y.max=-0.09 material=polysilicon 
+electrode name=substarte bottom
+
+doping uniform conc=1e18 p.type region=4 
+#doping uniform conc=1e18 n.type x.min=0.25 x.max=0.75 y.min=-0.1 y.max=-0.09
+#doping uniform conc=1e19 n.type  x.min=0 x.max=0.286 y.min=0 y.max=0.1
+#doping uniform conc=1e19 n.type  x.min=0.714 x.max=1 y.min=0 y.max=0.1
+doping uniform conc=1e20 n.type  region=5
+doping uniform conc=1e20 n.type  region=6
+#doping gaussian junction=0.15 conc=1e19 n.type x.left=0 x.right=0.1 y.top=0 y.bottom=0 ratio.lateral=1
+#doping gaussian junction=0.15 conc=1e19 n.type x.left=0.9 x.right=1 y.top=0 y.bottom=0 ratio.lateral=1
+
+save outf=mosexp.str
+#tonyplot mosexp.str
+
+go atlas
+
+mesh infile=mosexp.str
+
+contact name=gate workfunction=5.2
+
+model mos consrh conmob boltzman print temperature=300
+
+method newton itlimit=25 trap atrap=0.5 maxtrap=5 autonr nrcriterion=0.1 tol.time=0.005 dt.min=1e-25
+output con.band val.band QFN QFP charge
+solve init
+solve vdrain=0.2
+
+log outf=mosexp.log
+
+solve vgate=0 vstep=0.05 vfinal=2 name=gate
+#solve vgate=0 name=gate
+#extract name="vt" (xintercept(maxslope(curve(abs(v."gate"),abs(i."drain")))) \
+	-abs(ave(v."drain"))/2.0)
+
+tonyplot mosexp.log
+save outf=mosexp.str
+tonyplot mosexp.str
+quit
