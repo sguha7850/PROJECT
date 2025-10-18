@@ -616,3 +616,94 @@ tonyplot mosexp.log
 save outf=mosexp.str
 tonyplot mosexp.str
 quit
+--------------------------
+
+MOSFET (variable declaration)
+
+go atlas
+# Channel Length
+set L=0.08
+# Source/Drain Length
+set Lsd=0.006
+#oxide length
+set Lox=$L-$Lsd-$Lsd
+# Oxide Thickness
+set Tox=0.001
+# Source/Drain Thickness
+set Tsd=0.09
+# Metal thickness
+set Tmetal=0.002
+# Substrate thickness
+set Tbody=0.2
+
+
+#defining mesh
+# X-direction mesh
+mesh space.mult=0.7
+x.mesh loc=0 spac=0.001
+x.mesh loc=$Lsd spac=0.005
+x.mesh loc=$Lsd+$Lox spac=0.005
+x.mesh loc=$L spac=0.001
+
+# Y-direction mesh
+y.mesh loc=-$Tmetal-$Tox spac=0.005
+y.mesh loc=-$Tox spac=0.005
+y.mesh loc=0 spac=0.001
+y.mesh loc=$Tsd spac=0.001
+y.mesh loc=$Tbody spac=0.002
+
+#region defining
+
+
+region number=1 x.min=0 x.max=$Lsd y.min=-$Tox-$Tmetal y.max=0 material=air
+region number=2 x.min=$Lsd+$Lox x.max=$L y.min=-$Tox-$Tmetal y.max=0 material=air
+
+region number=3 x.min=$Lsd x.max=$Lsd+$Lox y.min=-$Tox-$Tmetal y.max=-$Tox material=Silver
+region number=4 x.min=$Lsd x.max=$Lsd+$Lox y.min=-$Tox y.max=0 material=SiO2
+region number=5 x.min=0 x.max=$L y.min=0 y.max=$Tbody material=Silicon
+region number=6 x.min=0 x.max=$Lsd y.min=0 y.max=$Tsd material=Silicon
+region number=7 x.min=$Lsd+$Lox x.max=$L y.min=0 y.max=$Tsd material=Silicon
+
+
+#defining electrode
+
+electrode name=source x.min=0 x.max=$Lsd y.min=0 y.max=0
+electrode name=drain x.min=$Lsd+$Lox x.max=$L y.min=0 y.max=0
+electrode name=gate x.min=$Lsd x.max=$Lsd+$Lox y.min=-$Tox-$Tmetal y.max=-$Tox-$Tmetal  
+electrode name=substarte bottom
+
+#doping
+
+doping uniform conc=1e18 p.type region=5 
+doping uniform conc=1e20 n.type  region=6
+doping uniform conc=1e20 n.type  region=7
+
+
+save outf=mosexp_var.str
+#tonyplot mosexp_var.str
+
+go atlas
+
+mesh infile=mosexp_var.str
+
+contact name=gate workfunction=5.2
+
+model mos consrh conmob boltzman print temperature=300
+
+method newton itlimit=25 trap atrap=0.5 maxtrap=5 autonr nrcriterion=0.1 tol.time=0.005 dt.min=1e-25
+output con.band val.band QFN QFP charge
+solve init
+solve vdrain=0.2
+
+log outf=mosexp_var.log
+
+solve vgate=0 vstep=0.1 vfinal=2 name=gate
+#solve vgate=0 name=gate
+#extract name="vt" (xintercept(maxslope(curve(abs(v."gate"),abs(i."drain")))) \
+	-abs(ave(v."drain"))/2.0)
+
+tonyplot mosexp_var.log
+save outf=mosexp_var.str
+tonyplot mosexp_var.str
+quit
+
