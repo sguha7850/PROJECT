@@ -618,6 +618,77 @@ tonyplot mosexp.str
 quit
 --------------------------
 
+MOSCAP (variable declaration)
+
+go atlas
+# Channel Length
+set L=0.08
+# Oxide Thickness
+set Tox=0.001
+# Metal thickness
+set Tmetal=0.002
+# Substrate thickness
+set Tbody=0.3
+
+
+#defining mesh
+# X-direction mesh
+mesh space.mult=0.7
+x.mesh loc=0 spac=0.001
+x.mesh loc=$L spac=0.001
+
+# Y-direction mesh
+
+y.mesh loc=0 spac=0.001
+y.mesh loc=$Tmetal spac=0.001
+y.mesh loc=$Tmetal+$Tox spac=0.001
+y.mesh loc=$Tmetal+$Tox+$Tbody spac=0.001
+
+#region defining
+
+#region number=3 x.min=0 x.max=$L y.min=0 y.max=$Tmetal material=Silver
+region number=1 x.min=0 x.max=$L y.min=$Tmetal y.max=$Tmetal+$Tox material=SiO2
+region number=2 x.min=0 x.max=$L y.min=$Tmetal+$Tox y.max=$Tmetal+$Tox+$Tbody material=Silicon
+
+#defining electrode
+
+electrode name=gate x.min=0 x.max=$L y.min=0 y.max=$Tmetal  
+electrode name=substarte bottom
+
+#doping
+
+doping uniform conc=1e18 p.type region=2 
+
+
+
+save outf=moscap_var.str
+#tonyplot mosexp_var.str
+
+
+
+contact name=gate workfunction=5.2
+
+model mos consrh conmob boltzman print temperature=300
+
+method newton itlimit=25 trap atrap=0.5 maxtrap=5 autonr nrcriterion=0.1 tol.time=0.005 dt.min=1e-25
+output con.band val.band QFN QFP charge
+solve init
+#solve vdrain=0.2
+
+log outf=moscap_var.log
+
+#solve vgate=0 vstep=0.1 vfinal=2 name=gate
+solve vgate=0 name=gate
+#extract name="vt" (xintercept(maxslope(curve(abs(v."gate"),abs(i."drain")))) \
+	-abs(ave(v."drain"))/2.0)
+
+tonyplot moscap_var.log
+save outf=moscap_var.str
+tonyplot moscap_var.str
+quit
+
+-------------------------------------------------------
+
 MOSFET (variable declaration)
 
 go atlas
