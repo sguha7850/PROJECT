@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- Physical constants ---
+q = 1.602176634e-19      # electron charge (C)
+h = 6.62607015e-34       # Planck's constant (J·s)
+k_B = 8.617333262145e-5  # Boltzmann constant (eV/K)
+
+# --- User parameters ---
+Ef = 0.0     # Fermi level (eV)
+T = 300      # Temperature (K)
+filename = "Td_transmission.dat"  # comma-separated file: Energy (eV), Transmission
+
+# --- Load transmission data (comma-separated) ---
+data = np.loadtxt(filename, delimiter=',')
+E = data[:, 0]
+tau = data[:, 1]
+tau_Ef = np.interp(Ef, E, tau)
+
+# --- Fermi-Dirac derivative (-df/dE) ---
+dfdE = np.exp((E - Ef) / (k_B * T)) / ((np.exp((E - Ef) / (k_B * T)) + 1)**2 * k_B * T)
+deltaE = E[1] - E[0]  
+# --- Plot the Fermi-Dirac derivative separately ---
+plt.figure(figsize=(6,4))
+plt.plot(E, dfdE, 'r', lw=2)
+plt.plot(E, tau)
+plt.xlabel('Energy (eV)')
+plt.ylabel(r'$-\frac{\partial f}{\partial E}$')
+plt.title(f'Fermi–Dirac Derivative at T = {T} K')
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# --- Calculate Conductance ---
+integrand = tau * dfdE
+G0 = 2 * q**2 / h
+G = G0 * np.trapz(integrand, E)
+plt.plot(E, integrand)
+
+
+# --- Print results ---
+#print(integrand)
+print("Integration value is" , np.trapz(integrand, E))
+print("Sum is" , np.sum(integrand*deltaE))
+#print(dfdE)
+#print(tau)
+#print(np.trapz(integrand, E))
+print(tau_Ef)
+print(G0)
+print(2*q**2/h)
+print(f"Conductance G = {G:.4e} S")
+print(f"G / G0 = {G / G0:.4f}")
