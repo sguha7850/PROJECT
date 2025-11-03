@@ -268,3 +268,7 @@ done
 
 AIMD temperature and energy plot:
 grep F OSZICAR > greplist.txt
+______________________________________________
+
+Electron density (CHGCAR) differences:
+vaspkit -> 31, 314, then give path
