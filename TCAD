@@ -777,4 +777,33 @@ tonyplot mosexp_var.log
 save outf=mosexp_var.str
 tonyplot mosexp_var.str
 quit
+------------------------------
+TCAD :
 
+1. pn junction:
+
+a. standard pn junction
+b. variation of tau
+c. ac analysis
+d. mixed mode (resistor-diode circuit)
+
+MOScap
+1. band structure, cv characteristics,
+2. surface potential vs gate bias using probe
+3. change metal work function and check
+4. inversion charge density vs gate voltage using python  -same graph using probe command of charge
+5. ramped input signal - ac freq analysis
+6. quantum effect - electron distribution
+7. cv char - low,mid,high freq
+8. polydepletion effect
+
+MOSFET
+1. id-vgs
+2. band structure
+3. cv charcateristics
+4. velocity saturation - shirahata model vs normal - calculate conductance dydx(Drain currenht, gate voltage)
+5. fldmob vs normal
+6. low and dibl (250,125,75,37nm) - plot corresponding vth vs channel length by extrapolating
+7. high dibl - sqrt (Id) vs Vg for different channel lengths
+
+DG MOSFET
