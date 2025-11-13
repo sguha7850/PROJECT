@@ -1,0 +1,6 @@
+Main paper used now:
+Modeling and Characterization of Vertical GaN Schottky Diodes With AlGaN Cap Layers - https://ieeexplore.ieee.org/document/7891887
+
+Equations:
+1. The quadratic formula is given by:
+$$ x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$
