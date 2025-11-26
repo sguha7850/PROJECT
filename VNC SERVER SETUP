@@ -46,3 +46,9 @@ nano ~/.vnc/xstartup - not needed
 chmod +x ~/.vnc/xstartup
 vncserver :2
 confirm - ss -tulpn | grep 5902
+----------------------------------------------
+Issue of stuck at password input step:
+1. on mobaxterm - loginctl list-sessions
+2. check output, whichever shows idle since time, that is locked. we have to unlock it
+3. sudo loginctl unlock-sessions
+4. login now through tiger vnc
