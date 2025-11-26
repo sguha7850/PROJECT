@@ -37,3 +37,12 @@ ss -tulpn | grep 5902 (ASSUMING IN PREVIOUS STEP PORT 2 WAS USED)
 sudo firewall-cmd --add-port=5902/tcp --permanent
 sudo firewall-cmd --reload
 sudo firewall-cmd --list-ports
+--------------------------------------
+to start a new session for new user (sourav)
+steps:
+vncpasswd
+mkdir -p ~/.vnc
+nano ~/.vnc/xstartup - not needed
+chmod +x ~/.vnc/xstartup
+vncserver :2
+confirm - ss -tulpn | grep 5902
