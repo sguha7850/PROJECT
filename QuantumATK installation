@@ -1,0 +1,8 @@
+Updating license server from scratch:
+1. if you want to update license server, then first kill existing running server -----> killall lmgrd
+2. make sure the port (27020 currently) is off -----> ss -tulpn | grep 27020
+3. download scl--> synopsys installer---> modify license key---> https://docs.quantumatk.com/intro/installation/license_server_linux.html#license-server-linux
+4. currently the license that is being used is in this folder in 67 machine --> /usr/synopsys/scl/2023.09/admin/license/
+5. finally restart the license server - /usr/synopsys/scl/2023.09/linux64/bin/lmgrd \
+ -c /usr/synopsys/scl/2023.09/admin/license/SynopsysKey.lic \
+ -l /usr/synopsys/scl/2023.09/admin/logs/snps.debug.log
