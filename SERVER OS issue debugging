@@ -1,0 +1,15 @@
+Fedora 4v100 66 lab machine debugging
+
+F11 boot menu
+Delete and f2 for other menus
+F12 network menu
+Power switch of gpu right most out of the 2 red circular buttons
+Check blue and red lights on left of gpu pannel - bottom left
+
+Give os in pendrive 
+Reboot > f11> sandisk pendrive option>troubleshoot>last option most probably (not the fedora option)> checking now
+
+After booting, options>selecting1>press enter to get a shell>
+
+This did not work
+Reinstalling fedora again> reboot>f11>sandisk option>install fedora option
