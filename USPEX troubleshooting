@@ -91,3 +91,7 @@ steps (fedora system:
 install.sh: line 144: ./USPEX_MATLABruntime.install: Permission denied
 
 solution: chmod +x USPEX_MATLABruntime.install while inside USPEX folder
+-------------------------------------------------------------------------------
+u=uspex unable to find numpy and scipy, even though they have been installed
+solution:
+export LD_PRELOAD=/usr/lib64/libstdc++.so.6
