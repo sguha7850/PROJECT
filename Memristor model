@@ -1,0 +1,64 @@
+#VTEAM
+-----------------------
+print("hello")
+import numpy as np
+import matplotlib.pyplot as plt
+
+#input signal
+dt=1e-5
+t=np.arange(0,4*np.pi,dt)
+v_signal=np.sin(t)
+
+#plt.plot(t, v_signal)
+#plt.show()
+
+class VTEAM:
+    def __init__(self):
+    
+        self.v_off = 0.5
+        self.v_on = -0.53
+
+        self.alpha_off = 1
+        self.alpha_on = 3
+
+        self.k_off = 4.03e-8
+        self.k_on = -80.0     # Note: This is very fast switching compared to k_off
+
+        self.R_off = 2500.0
+        self.R_on = 100.0
+
+        self.w_off = 10e-9
+        self.w_on = 0.0
+        self.w_init = 10e-9   # Starts in OFF State
+        self.w=self.w_init
+        
+    def dw_dt(self,v):
+        if v>self.v_off:
+            return self.k_off*((v/self.v_off)-1)**self.alpha_off
+        elif v<self.v_on:
+            return self.k_on*((v/self.v_on)-1)**self.alpha_on
+            
+        else: return 0
+        
+    def Resistance(self):
+        return self.R_on + (self.R_off - self.R_on) / (self.w_off - self.w_on)* (self.w - self.w_on)
+           
+memristor=VTEAM()
+current=[]
+state=[]
+derivative=[]
+for v in v_signal:
+    dw_dt=memristor.dw_dt(v)
+    derivative.append(dw_dt)
+    memristor.w=memristor.w+dw_dt*dt
+    memristor.w = np.clip(memristor.w, memristor.w_on, memristor.w_off)
+    state.append(memristor.w)
+    i=v/memristor.Resistance()
+    current.append(i)
+    
+    
+plt.plot(v_signal,current)
+plt.show()
+
+-------------------------------------------------------------------------
+
