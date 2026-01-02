@@ -55,7 +55,88 @@ for v in v_signal:
     state.append(memristor.w)
     i=v/memristor.Resistance()
     current.append(i)
-    
+----------------------------------------------------
+MoTe2 memristor:
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- 1. Physical Constants ---
+k_B = 8.617e-5          # Boltzmann constant (eV/K)
+T = 300                 # Temperature (K)
+G0 = 7.748e-5           # Quantum of conductance (S)
+L = 5e-9                # Device thickness (5nm)
+
+# --- 2. Model Parameters (Updated for Ea = 2.0 eV) ---
+Ea = 2.0                # NEW: High Activation Energy (2 eV)
+beta = 2.4e-9           # Field coupling constant (eV*m/V)
+k_attempt = 1e12        # Attempt frequency (Hz)
+
+# Schottky Parameters (Initial 2H Phase)
+# Slightly reduced A_sch because higher voltage (4V) creates higher currents
+A_sch = 5e-5
+B_sch = 0.8
+
+# Metallic Parameters (Final 1T' Phase)
+N_channels = 8
+G_metallic = N_channels * G0
+
+freq = 1e5                          # 100 kHz
+t = np.linspace(0, 2/freq, 10000)   # 2 full cycles
+V_max = 4.2                         # 4.2V to overcome the 2.0eV barrier
+V_signal = V_max * np.sin(2 * np.pi * freq * t)
+dt = t[1] - t[0]
+
+plt.plot(t, V_signal)
+plt.show()
+
+class MoTe2:
+    def __init__(self):
+
+        self.v_off = 0.1
+        self.v_on = -0.1
+        self.Eset=2
+        self.Ereset=0.5
+
+
+        self.w_off = 10e-9
+        self.w_on = 0.0
+        self.w_init = 0   # Starts in OFF State
+        self.w=self.w_init
+
+    def dw_dt(self,v):
+
+          if v>self.v_off:
+            return k_attempt * np.exp((-(self.Eset - beta * (v/L)) / (k_B * T)))*(1-self.w)
+          elif v<self.v_on:
+            return k_attempt * np.exp((-(self.Ereset + beta * (v/L)) / (k_B * T)))*(-self.w)
+
+          else: return 0
+
+memristor =MoTe2()
+current = []
+state = []
+derivative=[]
+
+for v in V_signal:
+    dw_dt = memristor.dw_dt(v)
+    derivative.append(dw_dt)
+    memristor.w = memristor.w + dw_dt * dt
+    memristor.w = np.clip(memristor.w, 0, 1)
+    state.append(memristor.w)
+
+
+    I_sch = A_sch * (v**2) * np.exp(-B_sch / (np.abs(v) + 1e-9)) * np.sign(v)
+    I_met = G_metallic * v
+    I_total = (1 - memristor.w) * I_sch + memristor.w * I_met
+    current.append(I_total)
+
+plt.plot(V_signal, current)
+plt.show()
+print(state)
+plt.plot(V_signal, state)
+plt.show()
+-----------------------------------------------------------------------
     
 plt.plot(v_signal,current)
 plt.show()
