@@ -135,7 +135,7 @@ for v in V_signal:
     current.append(I_total)
 
 plt.semilogy(V_signal, np.abs(current))
-plt.show()
+#plt.show()
 print(state)
 plt.plot(V_signal, state)
 plt.show()
