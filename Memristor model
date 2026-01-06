@@ -126,7 +126,8 @@ for v in V_signal:
     state.append(memristor.w)
 
 
-    I_sch = A_sch * (v**2) * np.exp(-B_sch / (np.abs(v) + 1e-9)) * np.sign(v)
+    #I_sch = A_sch * (v**2) * np.exp(-B_sch / (np.abs(v) + 1e-9)) * np.sign(v) #fowler-nordheim tunelling
+    I_sch = Is * (np.exp(v / n*vt) - 1)  #thermionic emission current
     I_met = G_metallic * v
     I_total = (1 - memristor.w) * I_sch + memristor.w * I_met
     current.append(I_total)
