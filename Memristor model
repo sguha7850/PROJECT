@@ -134,7 +134,7 @@ for v in V_signal:
     I_total = (1 - memristor.w) * I_sch + memristor.w * I_met
     current.append(I_total)
 
-plt.plot(V_signal, current)
+plt.semilogy(V_signal, np.abs(current))
 plt.show()
 print(state)
 plt.plot(V_signal, state)
