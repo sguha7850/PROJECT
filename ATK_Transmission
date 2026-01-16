@@ -1,0 +1,32 @@
+import numpy as np
+
+# -------- Physical constants --------
+q = 1.602176634e-19      # Electron charge (C)
+h = 6.62607015e-34       # Planck constant (J·s)
+kB = 8.617333262e-5      # Boltzmann constant (eV/K)
+
+# -------- User inputs --------
+Ef = 0.0        # Fermi level in eV
+T = 300         # Temperature in K
+filename = "DP1_transmission.dat"   # Your transmission file
+
+# -------- Load transmission data --------
+# File format: E (eV)   T(E)
+E, tau = np.loadtxt(filename, unpack=True)
+
+# -------- Fermi-Dirac distribution --------
+def fermi(E, Ef, T):
+    return 1.0 / (1.0 + np.exp((E - Ef) / (kB * T)))
+
+# -------- Derivative of Fermi function --------
+def dfermi_dE(E, Ef, T):
+    exp_term = np.exp((E - Ef) / (kB * T))
+    return -exp_term / (kB * T * (1.0 + exp_term)**2)
+
+# -------- Integrand --------
+integrand = tau * (-dfermi_dE(E, Ef, T))
+
+# -------- Numerical integration --------
+G = (2 * q**2 / h) * np.trapz(integrand, E)
+
+print(f"Conductance G = {G:.6e} S")
