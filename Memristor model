@@ -233,3 +233,95 @@ plt.show()
 print(state)
 #plt.plot(V_signal, state)
 #plt.show()
+--------------------------------------------------
+With series resistance:
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.special import lambertw
+
+# --- 1. Physical Constants ---
+k_B = 8.617e-5
+T = 300
+G0 = 1e-4
+L = 7e-9
+vt = 0.026
+
+# --- 2. Parameters ---
+#Ea = 2.0
+beta = 0.45e-8
+k_attempt = 1e12
+Is = 1e-6
+n = 1.4
+Rs = 5000  # Added Series Resistance to limit current
+N_channels = 2
+G_metallic = N_channels * G0
+
+freq = 1e2
+t = np.linspace(0, 2/freq, 10000)
+V_max = 2.5
+V_signal = V_max * np.sin(2 * np.pi * freq * t)
+dt = t[1] - t[0]
+
+def calculate_schottky_rs(V, Is, n, vt, Rs):
+    """Calculates Schottky current limited by Rs using Lambert W."""
+    if V <= 0: return Is * (np.exp(V / (n * vt)) - 1) # Reverse bias is usually safe
+    # Analytical solution for I = Is * (exp((V - I*Rs) / (n*vt)) - 1)
+    exponent_arg = (V + Is * Rs) / (n * vt)
+    w_arg = (Is * Rs / (n * vt)) * np.exp(exponent_arg)
+    I = (n * vt / Rs) * np.real(lambertw(w_arg)) - Is
+    return I
+
+class MoTe2:
+    def __init__(self):
+        self.v_off = 0.1
+        self.v_on = -0.1
+        self.w = 0.0
+        self.Eset=1.8
+        self.Ereset=1.9
+
+    def dw_dt(self, v):
+        #beta_set = 0.5e-8
+        #beta_reset = 0.45e-8 
+
+        if v > self.v_off:
+            return k_attempt * np.exp(-(self.Eset - beta * (v/L)) / (k_B * T)) * (1 - self.w)
+        elif v < self.v_on:
+            return k_attempt * np.exp(-(self.Ereset - beta * np.abs((v/L))) / (k_B * T)) * (-self.w)
+        return 0
+
+memristor = MoTe2()
+current = []
+state = []
+
+for v in V_signal:
+    change = memristor.dw_dt(v)
+    memristor.w = np.clip(memristor.w + change * dt, 0, 1)
+    state.append(memristor.w)
+
+    # Calculate I_sch with the Rs limit
+    I_sch = calculate_schottky_rs(v, Is, n, vt, Rs)
+    I_met = G_metallic * v
+    
+    # In the metallic phase, Rs also limits the total current
+    I_total = (1 - memristor.w) * I_sch + memristor.w * I_met
+    # Final safety check: Ohmic limit I = V/Rs
+    I_total = np.sign(v) * min(abs(I_total), abs(v/Rs)) if abs(v) > 1e-6 else 0
+    
+    current.append(I_total)
+
+# --- 3. Plotting ---
+plt.figure(figsize=(12, 5))
+
+
+plt.semilogy(V_signal, np.abs(current), 'b')
+plt.title('I-V (Limited by $R_s$)')
+plt.xlabel('Voltage (V)')
+plt.ylabel('Current (A)')
+plt.grid(True, which='both', alpha=0.3)
+x=[-0.01067, -0.01067, -0.01067, -0.01067, -0.01067, 0.03641, 0.07021, 0.13058, 0.21147, 0.31891, 0.44688, 0.57486, 0.71611, 0.89116, 1.23524, 1.45737, 1.67951, 1.91493, 1.55154, 1.55154, 1.41029, 1.31612, 1.20747, 1.03241, 0.84408, 0.68955, 0.56158, 0.38652, 0.30563, 0.25855, 0.21147, 0.16438, 0.1511, 0.13782, 0.10402, 0.09074, 0.05693, 0.05693, 0.04365, 0.02917, -0.05172, -0.11208, -0.17245, -0.26662, -0.39459, -0.54912, -0.91251, -1.06825, -1.2433, -1.37127, -1.54633, -1.54633, -1.68758, -1.87591, -1.98336, -1.85539, -1.63325, -1.5258, -1.39783, -1.2095, -0.9608, -0.80506, -0.66381, -0.50928, -0.36803, -0.24005, -0.14589, -0.0988, -0.05172, -0.03723]
+
+y=[1.33679E-8, 3.11245E-8, 2.01107E-7, 3.97687E-7, 7.18864E-7, 1.2123E-6, 2.5696E-6, 4.64485E-6, 1.02975E-5, 2.68795E-5, 6.23287E-5, 1.23254E-4, 2.22796E-4, 3.75725E-4, 3.75725E-4, 3.75725E-4, 3.75725E-4, 3.75725E-4, 3.06346E-4, 1.90001E-4, 1.00495E-4, 6.51918E-5, 4.04329E-5, 1.90756E-5, 6.54508E-6, 2.63333E-6, 1.1878E-6, 3.47558E-7, 1.92275E-7, 1.1355E-7, 6.73326E-8, 3.99267E-8, 2.47632E-8, 1.4684E-8, 6.62342E-9, 3.66418E-9, 1.64604E-9, 9.10618E-10, 5.0583E-10, 2.27232E-10, 1.15905E-6, 2.5696E-6, 5.98282E-6, 1.13114E-5, 2.39758E-5, 4.7412E-5, 8.96391E-5, 1.00495E-4, 1.17841E-4, 1.32113E-4, 2.03657E-4, 3.43448E-4, 3.59224E-4, 3.59224E-4, 3.59224E-4, 2.73253E-4, 1.90001E-4, 1.17841E-4, 1.05111E-4, 6.81863E-5, 3.60651E-5, 1.99518E-5, 1.1831E-5, 6.25764E-6, 2.95225E-6, 1.13563E-6, 4.35061E-7, 2.05254E-7, 9.68356E-8, 5.74213E-8]
+
+plt.semilogy(x, y)
+plt.show()
