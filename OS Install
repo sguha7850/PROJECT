@@ -16,3 +16,21 @@ FEDORA Issue stuck on Running Transaction:
 sudo rm -f /usr/lib/sysimage/rpm/.rpm.lock
 sudo rm -f /var/lib/rpm/.rpm.lock
 sudo rpm --rebuilddb
+
+--------------------------------------------------------------------------
+How to take care of data before installing/updating OS
+
+1. use lsblk to check your drives. ideally os is installed in sda, while sdb and sdc are idle.
+2. if sda, sdb, sdc - all 3 have mount points written (check lsblk output), then it means all 3 drives are functioaning
+3. best way is to transfer all data to sdb or sdc, before re installing OS
+4. if sdb and sdc dont have mount points -  we need to mount them first
+    example to mount sdc which was unmounted at first
+    sudo mkdir /data_sdc
+    sudo mount /dev/sdc1 /data_sdc
+    This creates a new path /data_sdc to access the sdc drive. 
+    Now transfer all data to sdc
+5. Install/update OS now.
+6. after OS installed, we will see that the mount points created in previous steps have again been removed. DONT PANIC. again create the same moint point using the same address. data will be there.
+7. OPTIONAL: install ssh access using below commands:
+    sudo apt update
+    sudo apt install openssh-server
