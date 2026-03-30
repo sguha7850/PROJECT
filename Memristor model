@@ -770,16 +770,16 @@ import matplotlib.pyplot as plt
 # --- 1. Physical Constants ---
 k_B = 8.617e-5          # Boltzmann constant (eV/K)
 T = 300                 # Temperature (K)
-G0 = 0.95e-2             # DP1 conductance
+G0 = 0.90e-2             # DP1 conductance
 L = 0.7e-9                # Device thickness (7nm)
 
 # --- 2. Model Parameters (Updated for Ea = 2.0 eV) ---
 #Ea = 2.0                # NEW: High Activation Energy (2 eV)
-beta = 1.2e-9          # Field coupling constant (eV*m/V)
+beta = 1.23e-9          # Field coupling constant (eV*m/V)
 k_attempt = 1e10        # Attempt frequency (Hz)
 
 # Schottky Parameters (Initial 2H Phase)
-Is = 5e-6
+Is = 8e-6
 n_set=8.5
 n_reset=8
 vt = 0.026
@@ -1057,5 +1057,5 @@ plt.semilogy(x_exp, y_exp, 'r--', label="Experimental Data")
 plt.xlabel("Voltage (V)")
 plt.ylabel("Current (A)")
 plt.legend()
-plt.grid(True, which="both", ls="-", alpha=0.3)
+# plt.grid(True, which="both", ls="-", alpha=0.3)
 plt.show()
