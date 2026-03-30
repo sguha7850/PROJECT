@@ -761,3 +761,301 @@ plt.ylabel("Current (A)")
 plt.legend()
 plt.grid(True, which="both", ls="-", alpha=0.3)
 plt.show()
+-----------------------------------------------------------
+#atomrister_lithofree
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- 1. Physical Constants ---
+k_B = 8.617e-5          # Boltzmann constant (eV/K)
+T = 300                 # Temperature (K)
+G0 = 0.95e-2             # DP1 conductance
+L = 0.7e-9                # Device thickness (7nm)
+
+# --- 2. Model Parameters (Updated for Ea = 2.0 eV) ---
+#Ea = 2.0                # NEW: High Activation Energy (2 eV)
+beta = 1.2e-9          # Field coupling constant (eV*m/V)
+k_attempt = 1e10        # Attempt frequency (Hz)
+
+# Schottky Parameters (Initial 2H Phase)
+Is = 5e-6
+n_set=8.5
+n_reset=8
+vt = 0.026
+
+# Metallic Parameters (Final 1T' Phase)
+N_channels = 2
+G_metallic = N_channels * G0
+s_set=5
+s_reset=1
+
+freq = 1e3                          # 1 kHz
+t = np.linspace(0, 1/freq, 25000)   # 2 full cycles
+V_max = 1.0                         # 2V Amplitude
+V_signal = V_max * np.sin(2 * np.pi * freq * t)
+dt = t[1] - t[0]
+
+class MoTe2:
+    def __init__(self): # Fixed to double underscores
+        self.v_off = 0.0
+        self.v_on = -0.4
+        self.Eset = 1.75
+        self.Ereset = 1.63
+
+        self.w_off = 10e-9
+        self.w_on = 0.0
+        self.w_init = 0    # Starts in OFF State
+        self.w = self.w_init
+        self.p_set = 3
+        self.p_reset = 0.3
+
+    def dw_dt(self, v):
+        if v > self.v_off:
+            window = (1 - self.w)**self.p_set
+            return k_attempt * np.exp((-(self.Eset - beta * (v/L)) / (1*k_B * T))) * window
+        elif v < self.v_on:
+            # Using -(self.w**p) to ensure a negative rate for RESET
+            window = -(self.w)**self.p_reset 
+            return k_attempt * np.exp((-(self.Ereset - beta * (abs(v/L))) / (k_B * T))) * window
+        else:
+            return 0
+
+memristor = MoTe2()
+current = []
+state = []
+derivative = []
+
+for v in V_signal:
+    dw_val = memristor.dw_dt(v)
+    derivative.append(dw_val)
+    memristor.w = np.clip(memristor.w + dw_val * dt, 0, 1)
+    state.append(memristor.w)
+    if v >= 0:
+        n_current = n_set
+    else:
+        n_current = n_reset
+    # I_sch = Is * (exp(v/nVt) - 1) (Thermionic emission current)
+    I_sch = Is * (np.exp(np.abs(v) / (n_current * vt)) - 1)  * np.sign(v)
+    I_met = G_metallic * v
+    
+    # Total current blending
+    I_total = (1 - memristor.w) * I_sch + memristor.w * I_met
+    I_clipped = np.maximum(np.abs(I_total), 1e-9)
+    current.append(I_clipped)
+plt.plot(V_signal,state)
+plt.show()
+#print(V_signal,state)
+
+# --- Plotting ---
+plt.figure(figsize=(10, 5))
+plt.semilogy(V_signal, current, label="Simulated Model")
+
+# Experimental Data Reference
+x_exp = [
+0.00948,
+0.00948,
+0.00948,
+0.00948,
+0.00948,
+0.00948,
+0.01443,
+0.01939,
+0.0419,
+0.07702,
+0.15267,
+0.28056,
+0.39853,
+0.53407,
+0.5818,
+0.66466,
+0.73985,
+0.8101,
+0.87539,
+0.94068,
+0.99832,
+0.83532,
+0.83036,
+0.83036,
+0.83036,
+0.82541,
+0.82001,
+0.80785,
+0.80244,
+0.79029,
+0.78488,
+0.72725,
+0.63449,
+0.53407,
+0.44131,
+0.34089,
+0.26525,
+0.18284,
+0.11755,
+0.06982,
+0.04685,
+0.02929,
+0.01713,
+0.01713,
+0.01713,
+0.01713,
+0.01713,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01304,
+-0.01799,
+-0.0306,
+-0.04816,
+-0.08868,
+-0.15353,
+-0.21882,
+-0.27691,
+-0.36471,
+-0.45252,
+-0.52277,
+-0.59797,
+-0.6457,
+-0.68577,
+-0.72585,
+-0.72585,
+-0.72585,
+-0.76097,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.77358,
+-0.83167,
+-0.90191,
+-0.9546,
+-0.99467,
+-0.69613,
+-0.62048,
+-0.52772,
+-0.42235,
+-0.33454,
+-0.24178,
+-0.16614,
+-0.09094,
+-0.05581,
+-0.03825]
+y_exp = [
+0.00000800037,
+0.0000112774,
+0.0000214773,
+0.0000375745,
+0.0000615641,
+0.000112375,
+0.000205914,
+0.000375862,
+0.000764325,
+0.0014,
+0.00284,
+0.00496,
+0.007,
+0.00945,
+0.00945,
+0.00945,
+0.00945,
+0.00945,
+0.00945,
+0.00945,
+0.00945,
+0.00813,
+0.0054,
+0.00344,
+0.00244,
+0.00149,
+0.000851502,
+0.000464695,
+0.000244005,
+0.000133677,
+0.000110228,
+0.0000948326,
+0.0000781977,
+0.0000603881,
+0.0000466346,
+0.0000330833,
+0.0000233795,
+0.0000155931,
+0.0000094803,
+0.00000603692,
+0.00000384423,
+0.00000244795,
+0.00000155882,
+0.000000853992,
+0.000000448419,
+0.000000245664,
+0.000000120807,
+0.000000120807,
+0.000000189714,
+0.000000361301,
+0.000000659494,
+0.0000012038,
+0.00000219733,
+0.00000401085,
+0.00000732114,
+0.0000139966,
+0.0000244871,
+0.0000446972,
+0.0000908928,
+0.000192844,
+0.000367263,
+0.000601744,
+0.0011,
+0.00192,
+0.00289,
+0.00375,
+0.00485,
+0.00588,
+0.00684,
+0.00832,
+0.01009,
+0.01009,
+0.01009,
+0.00747,
+0.00496,
+0.00496,
+0.00383,
+0.00244,
+0.00134,
+0.000657571,
+0.000399791,
+0.000343952,
+0.000244005,
+0.000173101,
+0.000115006,
+0.000128123,
+0.000148924,
+0.00016591,
+0.00016591,
+0.0000948326,
+0.0000781977,
+0.0000603881,
+0.0000446972,
+0.0000317089,
+0.000021067,
+0.0000134152,
+0.000006597,
+0.00000360022,
+0.00000205786]
+plt.semilogy(x_exp, y_exp, 'r--', label="Experimental Data")
+
+plt.xlabel("Voltage (V)")
+plt.ylabel("Current (A)")
+plt.legend()
+plt.grid(True, which="both", ls="-", alpha=0.3)
+plt.show()
