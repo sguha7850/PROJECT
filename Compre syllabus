@@ -1,0 +1,37 @@
+Device physics:
+Quantum Mechanics (Excursion)
+Quantum Mechanics Fundamentals, Schrodinger Equation, Particle in a Box, Harmonic Oscillator
+Solid State Physics (Excursion)
+Bonding, Crystals, Wigner Seitz Cell, Bragg's Law, Lattice Waves and Phonons, Reciprocal Lattice, Brillouin
+Zones, Kronig Penny Model, Formation of Energy Bands
+Semiconductor Fundamentals
+Metals, Semiconductors - Density of States, Fermi Function, Carrier Concentrations and Mass Action Law,
+Doping, Recombination and Generation, Continuity Equation
+Metal Semiconductor Junctions, PN Junctions
+MOS Capacitor Theory, C-V
+characteristics, MOSFET operation,
+
+DFT Quantum-Mechanical Modeling of Nanomaterials:
+Introduction to nanotechnology and nanomaterials
+Overview of classical and quantum mechanics
+Introduction to phonons, excitons, and polarons
+Postulates of quantum mechanics
+Hartree-Fock method and density functional theory
+Concepts of basis sets, pseudopotentials, exchange-correlation functionals
+Quantum confinement
+Principles of 0D, 1D, and 2D materials
+Density of states
+Band structure of materials
+Force fields and potential energy surfaces
+Transition state theory
+Nudged elastic band method
+
+Quantum chemistry:
+Motivation and failure of CM
+Postulates of QM
+Dirac notation and mathematical formalism
+Perturbation theory (Time independent and Dependent)
+Variational problem
+Many electron Hamiltonian
+Hartree-Focke mthod
+DFT basics
