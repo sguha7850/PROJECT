@@ -1,1 +1,11 @@
+array/range creation commands - 
+np.arange(start, stop, step)
+np.linspace(start, stop, num_points)
+np.zeros(size)
+np.ones(size)
+np.array()
+np.meshgrid()
+np.random.rand()
+
+
 
