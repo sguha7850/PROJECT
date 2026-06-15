@@ -42,8 +42,8 @@ Nvdia-smi not found error: how to resolve:
 After installing cuda:
         1. sudo dnf module disable nvidia-driver
         2. sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda
-
-https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Rocky&target_version=10&target_type=rpm_network
+(Rocky 10 version)
+https://docs.rockylinux.org/10/desktop/display/installing_nvidia_gpu_drivers/
 Follow this link, it is for installing cuda toolkit, which comprises of the toolkit installer and driver installer. First check if nvcc --version gives cuda version. if it works, then reinstall the driver if nvidia-smi problem occurs.
 
 -----------------------------------------------------------------------------------------
