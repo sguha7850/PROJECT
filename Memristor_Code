@@ -1,0 +1,227 @@
+#Ranganathan_VAMoS2 (1) -  Au/VA-MoS2/Si memristor - Large-Scale and Robust Multifunctional Vertically Aligned MoS2 Photo-Memristors -  https://doi.org/10.1002/adfm.202005718
+import numpy as np
+import matplotlib.pyplot as plt
+
+# --- 1. Physical Constants ---
+k_B = 8.617e-5          # Boltzmann constant (eV/K)
+T = 300                 # Temperature (K)
+G0 = 10**(-3.62)              # DP1 conductance
+L = 35e-9               # Device thickness (7 nm)
+
+# --- 2. Model Parameters (Updated for Ea = 2.0 eV) ---
+# Ea = 2.0              # NEW: High Activation Energy (2 eV)
+beta = 11e-9            # Field coupling constant (eV*m/V)
+k_attempt = 3e7         # Attempt frequency (Hz)
+
+# Schottky Parameters (Initial 2H Phase)
+Is = 1e-6
+n_set =11
+n_reset = 17
+vt = 0.026
+
+# Metallic Parameters (Final 1T' Phase)
+N_channels = 1
+G_metallic = N_channels * G0
+
+s_set = 4.5
+s_reset = 5
+
+freq = 1e3                          # 1 kHz
+t = np.linspace(0, 1 / freq, 25000)
+
+V_max = 4
+V_signal = V_max * np.sin(2 * np.pi * freq * t)
+
+# Scale negative part
+V_signal[V_signal < 0] *= 3/4
+
+dt = t[1] - t[0]
+
+# plt.plot(t, V_signal)
+# plt.show()
+
+
+class MoTe2:
+    def __init__(self):
+        self.v_off = 0.1
+        self.v_on = -0.1
+
+        self.Eset = 0.5
+        self.Ereset = 1
+
+        self.w_off = 10e-9
+        self.w_on = 0.0
+
+        self.w_init = 0      # Starts in OFF state
+        self.w = self.w_init
+
+        self.p_set = 5
+        self.p_reset = 3
+
+    def dw_dt(self, v):
+
+        if v > self.v_off:
+
+            window = (1 - self.w) ** self.p_set
+
+            return (
+                k_attempt
+                * np.exp(
+                    (-(self.Eset - beta * (v / L))) / (k_B * T)
+                )
+                * window
+            )
+
+        elif v < self.v_on:
+
+            # Using -(self.w**p) to ensure a negative rate for RESET
+            window = -(self.w) ** self.p_reset
+
+            return (
+                k_attempt
+                * np.exp(
+                    (-(self.Ereset - beta * (abs(v / L))))
+                    / (k_B * T)
+                )
+                * window
+            )
+
+        else:
+            return 0
+
+
+memristor = MoTe2()
+
+current = []
+state = []
+derivative = []
+
+for v in V_signal:
+
+    dw_val = memristor.dw_dt(v)
+
+    derivative.append(dw_val)
+
+    memristor.w = np.clip(
+        memristor.w + dw_val * dt,
+        0,
+        1
+    )
+
+    state.append(memristor.w)
+
+    if v >= 0:
+        n_current = n_set
+    else:
+        n_current = n_reset
+
+    # I_sch = Is * (exp(v/nVt) - 1)
+    # (Thermionic emission current)
+
+    I_sch = (
+        Is
+        * (np.exp(np.abs(v) / (n_current * vt)) - 1)
+        * np.sign(v)
+    )
+
+    I_met = G_metallic * v
+
+    # Total current blending
+    I_total = (
+        (1 - memristor.w) * I_sch
+        + memristor.w * I_met
+    )
+
+    I_clipped = np.maximum(np.abs(I_total), 1e-13)
+
+    current.append(I_clipped)
+
+# plt.plot(V_signal, state)
+# plt.show()
+
+# print(V_signal, state)
+
+# --- Plotting ---
+plt.figure(figsize=(10, 5))
+
+plt.semilogy(
+    V_signal,
+    current,
+    label="Simulated Model"
+)
+
+# Experimental Data Reference
+x_exp = [
+    -0.01112, -0.01112, -0.01112, -0.01112, -0.01112,
+    -0.01112, -0.01112, -0.01112, -0.01112, -0.01112,
+    -0.01112, -0.01112, -0.01112, 0.0093, 0.02826,
+    0.06764, 0.1639, 0.26163, 0.46582, 0.65981,
+    0.92234, 1.2053, 1.52617, 1.80767, 2.10959,
+    2.37212, 2.58507, 2.80968, 3.00367, 3.19765,
+    3.40185, 3.62646, 3.83941, 3.97651, 3.03284,
+    3.03284, 2.9745, 2.7703, 2.56611, 2.34295,
+    2.11834, 1.87622, 1.63265, 1.45762, 1.23447,
+    1.00985, 0.87421, 0.69919, 0.56354, 0.44686,
+    0.34914, 0.2908, 0.21349, 0.15515, 0.11577,
+    -0.06946, -0.08842, -0.10738, -0.14676, -0.26345,
+    -0.41805, -0.53473, -0.68059, -0.86582, -1.12836,
+    -1.35151, -1.59509, -1.78032, -2.02244, -2.28497,
+    -2.36374, -2.44104, -2.62627, -2.8013, -2.9559,
+    -2.31414, -2.03265, -1.78907, -1.52654, -1.28442,
+    -0.9825, -0.7681, -0.53473, -0.34075, -0.22407,
+    -0.16572, -0.08842
+]
+
+y_exp = [
+    0.00000000256281, 0.00000000356983, 0.00000000497255,
+    0.00000000821857, 0.0000000135353, 0.0000000233483,
+    0.0000000384526, 0.000000063328, 0.000000109631,
+    0.000000180552, 0.000000342909, 0.000000621778,
+    0.00000118089, 0.00000194483, 0.00000335483,
+    0.00000608313, 0.0000115532, 0.0000209488,
+    0.0000438048, 0.0000755633, 0.000130812,
+    0.000215436, 0.000346062, 0.000482042,
+    0.000673851, 0.000896139, 0.000896139,
+    0.000896139, 0.000896139, 0.000896139,
+    0.000896139, 0.000896139, 0.000896139,
+    0.000896139, 0.000813933, 0.000673851,
+    0.000612037, 0.000530728, 0.00046022,
+    0.000381014, 0.000300088, 0.000225651,
+    0.000161997, 0.000127589, 0.000083195,
+    0.0000568197, 0.0000407914, 0.0000291803,
+    0.0000200005, 0.0000127201, 0.00000909936,
+    0.00000623678, 0.00000406671, 0.00000258638,
+    0.00000149402, 0.00000164491, 0.0000028476,
+    0.00000540823, 0.00000789051, 0.0000164994,
+    0.0000299174, 0.0000438048, 0.0000703652,
+    0.0000980141, 0.000161997, 0.000236351,
+    0.000330396, 0.000439386, 0.00058433,
+    0.000739269, 0.000555893, 0.000418003,
+    0.000482042, 0.00058433, 0.000705802,
+    0.000322256, 0.000220092, 0.000165498,
+    0.000107913, 0.0000671798, 0.0000370495,
+    0.0000214779, 0.0000107585, 0.00000491211,
+    0.00000270902, 0.00000157044, 0.000000866096
+]
+
+plt.semilogy(
+    x_exp,
+    y_exp,
+    'r--',
+    label="Experimental Data"
+)
+
+plt.xlabel("Voltage (V)")
+plt.ylabel("Current (A)")
+
+plt.legend()
+
+plt.grid(
+    True,
+    which="both",
+    ls="-",
+    alpha=0.3
+)
+
+plt.show()
+plt.savefig("Ranganathan_iv_curve.png", dpi=300)
